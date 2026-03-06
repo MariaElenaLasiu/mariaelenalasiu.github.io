@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SugarWise — UX Research Case Study | Maria Elena Lasiu</title>
+<meta name="description" content="End-to-end UX research and business validation for SugarWise, a paediatric diabetes AI app. 91% adoption intent, 74% premium conversion. By Maria Elena Lasiu, UX Researcher." />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --bg:#080808;--s1:#111;--s2:#1a1a1a;--s3:#222;
+  --border:#2c2c2c;--border2:rgba(255,255,255,0.06);
+  --acc:#7c6af7;--acc2:#a78bfa;--teal:#2dd4bf;--green:#4ade80;--amber:#fbbf24;--rose:#f87171;
+  --glow:rgba(124,106,247,0.18);
+  --text:#f0f0f0;--muted:#888;--dim:#555;
+  --r:14px;--r2:22px;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7;overflow-x:hidden;}
+
+/* ── PROGRESS ── */
+#pb{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--acc),var(--teal));width:0;z-index:1000;transition:width .1s linear;box-shadow:0 0 12px var(--acc);}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(8,8,8,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
+.nav-brand{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;}
+.nav-brand b{color:var(--acc2);}
+.nav-links{display:flex;gap:1.5rem;list-style:none;}
+.nav-links a{font-size:.78rem;color:var(--muted);text-decoration:none;transition:color .25s;}
+.nav-links a:hover{color:var(--acc2);}
+
+/* ── TOC DOTS ── */
+.toc{position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:.6rem;z-index:800;}
+@media(max-width:1100px){.toc{display:none;}}
+.td{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:background .25s,transform .25s;position:relative;}
+.td.active,.td:hover{background:var(--acc2);transform:scale(1.5);}
+.td::after{content:attr(data-l);position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:.68rem;color:var(--muted);white-space:nowrap;opacity:0;transition:opacity .2s;background:var(--s1);padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border);}
+.td:hover::after{opacity:1;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:9rem 2rem 5rem;max-width:920px;margin:0 auto;}
+.chip{display:inline-flex;align-items:center;gap:.5rem;background:var(--glow);border:1px solid rgba(124,106,247,.3);border-radius:100px;padding:.3rem 1rem;font-size:.72rem;color:var(--acc2);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2rem;width:fit-content;}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acc2);flex-shrink:0;}
+h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:900;line-height:1.05;letter-spacing:-.035em;margin-bottom:1.5rem;}
+.grad{background:linear-gradient(135deg,var(--acc2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:620px;margin-bottom:2.5rem;line-height:1.85;}
+
+/* hero meta bar */
+.meta-bar{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:2.5rem;}
+.meta-cell{padding:.85rem 1.5rem;flex:1;min-width:140px;}
+.meta-cell+.meta-cell{border-left:1px solid var(--border);}
+.meta-cell .ml{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:.25rem;}
+.meta-cell .mv{font-size:.9rem;font-weight:600;color:var(--text);}
+
+/* stat bubbles */
+.bubbles{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;}
+.bubble{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.2rem 1.8rem;min-width:130px;}
+.bubble .bn{font-size:2.2rem;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--acc2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.bubble .bl{font-size:.72rem;color:var(--muted);margin-top:.3rem;}
+
+/* tags */
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;}
+.tag{background:var(--s2);border:1px solid var(--border);border-radius:100px;padding:.22rem .7rem;font-size:.72rem;color:var(--muted);}
+
+/* ── SECTION BASE ── */
+section{max-width:920px;margin:0 auto;padding:5rem 2rem;}
+.divider{border:none;border-top:1px solid var(--border);max-width:920px;margin:0 auto;}
+.sec-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--acc2);margin-bottom:.5rem;}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.025em;margin-bottom:1rem;}
+h3{font-size:1rem;font-weight:700;margin-bottom:.4rem;color:var(--text);}
+p{color:var(--muted);line-height:1.8;margin-bottom:.9rem;}
+p:last-child{margin-bottom:0;}
+
+/* ── AFFIRMATIVE NARRATIVE BLOCKS ── */
+.narrative{display:flex;flex-direction:column;gap:0;}
+.n-step{display:grid;grid-template-columns:200px 1fr;gap:0;position:relative;}
+.n-step+.n-step .n-left{padding-top:0;}
+.n-left{padding:2rem 2.5rem 2rem 0;border-right:1px solid var(--border);position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;}
+.n-left .step-num{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
+.n-left .step-type{font-size:.78rem;font-weight:700;padding:.25rem .75rem;border-radius:100px;white-space:nowrap;}
+.step-type.problem{background:rgba(248,113,113,.1);color:var(--rose);}
+.step-type.decision{background:rgba(124,106,247,.12);color:var(--acc2);}
+.step-type.action{background:rgba(45,212,191,.1);color:var(--teal);}
+.step-type.impact{background:rgba(74,222,128,.1);color:var(--green);}
+.n-dot{position:absolute;right:-6px;top:2rem;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg);z-index:1;}
+.n-dot.problem{background:var(--rose);}
+.n-dot.decision{background:var(--acc2);}
+.n-dot.action{background:var(--teal);}
+.n-dot.impact{background:var(--green);}
+.n-right{padding:2rem 0 2rem 2.5rem;}
+.n-right h3{margin-bottom:.6rem;}
+.n-right .quote{font-style:italic;font-size:.85rem;color:var(--dim);border-left:2px solid var(--acc);padding-left:.75rem;margin-top:.75rem;}
+
+/* ── CARD GRID ── */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1.5rem;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.5rem;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;transition:border-color .25s,transform .25s;}
+.card:hover{border-color:rgba(124,106,247,.45);transform:translateY(-2px);}
+.card-icon{width:38px;height:38px;border-radius:var(--r);background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:1rem;}
+.card.teal{border-left:3px solid var(--teal);}
+.card.green{border-left:3px solid var(--green);}
+.card.amber{border-left:3px solid var(--amber);}
+.card.rose{border-left:3px solid var(--rose);}
+.card.purple{border-left:3px solid var(--acc2);}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-top:1.5rem;}
+.stat{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;text-align:center;}
+.stat .sn{font-size:2.4rem;font-weight:900;line-height:1;margin-bottom:.25rem;}
+.stat .sl{font-size:.75rem;color:var(--muted);}
+.sn.g{color:var(--green);}
+.sn.t{color:var(--teal);}
+.sn.a{color:var(--amber);}
+.sn.p{color:var(--acc2);}
+
+/* ── BAR CHART ── */
+.bars{margin-top:1.5rem;display:flex;flex-direction:column;gap:.9rem;}
+.bar-row{display:flex;align-items:center;gap:1rem;}
+.bar-label{font-size:.8rem;color:var(--muted);min-width:210px;}
+.bar-track{flex:1;height:7px;background:var(--s3);border-radius:100px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--acc),var(--teal));width:0;transition:width 1.3s var(--ease);}
+.bar-pct{font-size:.8rem;font-weight:700;color:var(--acc2);min-width:34px;}
+
+/* ── ACCORDION ── */
+.acc-wrap{display:flex;flex-direction:column;gap:.5rem;margin-top:1.5rem;}
+.acc-item{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.acc-btn{width:100%;display:flex;justify-content:space-between;align-items:center;padding:.9rem 1.2rem;background:var(--s1);color:var(--text);font-size:.88rem;font-weight:600;cursor:pointer;border:none;text-align:left;gap:1rem;transition:background .2s;}
+.acc-btn:hover{background:var(--s2);}
+.acc-arr{font-size:.7rem;color:var(--muted);transition:transform .3s;flex-shrink:0;}
+.acc-item.open .acc-arr{transform:rotate(180deg);}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s var(--ease),padding .3s;padding:0 1.2rem;background:var(--s1);}
+.acc-item.open .acc-body{max-height:600px;padding:0 1.2rem 1.2rem;}
+.acc-pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:.75rem;}
+@media(max-width:600px){.acc-pair{grid-template-columns:1fr;}}
+.acc-side{background:var(--s2);border-radius:var(--r);padding:1rem;}
+.acc-side .as-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.4rem;}
+.acc-side .as-label.before{color:var(--rose);}
+.acc-side .as-label.after{color:var(--green);}
+
+/* ── HIGHLIGHT BOX ── */
+.hbox{border-radius:var(--r2);padding:1.75rem;margin-top:1.5rem;}
+.hbox.purple{background:linear-gradient(135deg,rgba(124,106,247,.09),rgba(45,212,191,.05));border:1px solid rgba(124,106,247,.25);}
+.hbox.teal{background:linear-gradient(135deg,rgba(45,212,191,.07),rgba(124,106,247,.04));border:1px solid rgba(45,212,191,.25);}
+.hbox.amber{background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(124,106,247,.04));border:1px solid rgba(251,191,36,.22);}
+.hbox h3{margin-bottom:.5rem;}
+
+/* ── DECISION TABLE ── */
+.dt{width:100%;border-collapse:collapse;margin-top:1.5rem;font-size:.82rem;}
+.dt th{text-align:left;padding:.7rem 1rem;background:var(--s2);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);}
+.dt td{padding:.8rem 1rem;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;}
+.dt tr:hover td{background:var(--s1);}
+.pill{display:inline-block;padding:.12rem .5rem;border-radius:100px;font-size:.68rem;font-weight:700;}
+.pill.g{background:rgba(74,222,128,.1);color:var(--green);}
+.pill.a{background:rgba(251,191,36,.1);color:var(--amber);}
+.pill.p{background:rgba(124,106,247,.1);color:var(--acc2);}
+
+/* ── SKILLS ── */
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1.5rem;}
+@media(max-width:600px){.skills-grid{grid-template-columns:1fr;}}
+.skill-list{list-style:none;}
+.skill-list li{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);padding:.38rem 0;border-bottom:1px solid var(--border);}
+.skill-list li::before{content:"→";color:var(--acc2);font-size:.68rem;flex-shrink:0;}
+
+/* ── CTA ── */
+.cta{text-align:center;padding:5rem 2rem;max-width:600px;margin:0 auto;}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:100px;font-size:.88rem;font-weight:600;text-decoration:none;transition:transform .25s,box-shadow .25s;}
+.btn-p{background:linear-gradient(135deg,var(--acc),#6366f1);color:#fff;box-shadow:0 4px 20px rgba(124,106,247,.3);}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,106,247,.45);}
+.btn-s{background:var(--s1);border:1px solid var(--border);color:var(--muted);}
+.btn-s:hover{border-color:var(--acc2);color:var(--acc2);transform:translateY(-2px);}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;}
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-size:.72rem;color:var(--dim);}
+
+/* ── REVEAL ── */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.rv.vi{opacity:1;transform:none;}
+.rv.d1{transition-delay:.1s;}
+.rv.d2{transition-delay:.2s;}
+.rv.d3{transition-delay:.3s;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--acc);}
+
+@media(max-width:700px){
+  .n-step{grid-template-columns:1fr;}
+  .n-left{border-right:none;border-bottom:1px solid var(--border);flex-direction:row;align-items:center;padding:1rem 0;}
+  .n-dot{display:none;}
+  .n-right{padding:1rem 0;}
+  .meta-cell+.meta-cell{border-left:none;border-top:1px solid var(--border);}
+  .meta-bar{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<div id="pb"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#top" class="nav-brand">Maria Elena Lasiu <b>/ SugarWise</b></a>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#findings">Findings</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="td active" data-section="top" data-l="Top"></div>
+  <div class="td" data-section="problem" data-l="Problem"></div>
+  <div class="td" data-section="process" data-l="Process"></div>
+  <div class="td" data-section="findings" data-l="Findings"></div>
+  <div class="td" data-section="decisions" data-l="Decisions"></div>
+  <div class="td" data-section="evolution" data-l="Prototype"></div>
+  <div class="td" data-section="impact" data-l="Impact"></div>
+  <div class="td" data-section="ethics" data-l="Ethics"></div>
+  <div class="td" data-section="reflection" data-l="Reflection"></div>
+  <div class="td" data-section="about" data-l="About"></div>
+</div>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<div id="top">
+<div class="hero">
+  <div class="chip rv">UX Research Case Study · 2025</div>
+  <h1 class="rv">From prototype<br/>to <span class="grad">proven strategy</span></h1>
+  <p class="hero-sub rv">How I led end-to-end UX research and business validation an AI app helping families manage paediatric Type 1 diabetes — and turned qualitative empathy into a defensible go-to-market model.</p>
+
+  <div class="meta-bar rv">
+    <div class="meta-cell"><div class="ml">Role</div><div class="mv">Lead UX Researcher</div></div>
+    <div class="meta-cell"><div class="ml">Timeline</div><div class="mv">6-month iterative programme</div></div>
+    <div class="meta-cell"><div class="ml">Methods</div><div class="mv">Qual · Quant · Van Westendorp</div></div>
+    <div class="meta-cell"><div class="ml">Participants</div><div class="mv">11 interviews · 54 survey</div></div>
+  </div>
+
+  <div class="bubbles rv">
+    <div class="bubble"><div class="bn">91%</div><div class="bl">Daily adoption intent</div></div>
+    <div class="bubble"><div class="bn">74%</div><div class="bl">Premium conversion rate</div></div>
+    <div class="bubble"><div class="bn">8+</div><div class="bl">Usability improvements</div></div>
+    <div class="bubble"><div class="bn">3×</div><div class="bl">WTP uplift, pen users</div></div>
+  </div>
+
+  <div class="tags rv">
+    <span class="tag">Mixed Methods</span><span class="tag">Moderated Usability Testing</span>
+    <span class="tag">Van Westendorp PSM</span><span class="tag">Iterative Prototype Testing</span>
+    <span class="tag">Stakeholder Research</span><span class="tag">Market Segmentation</span>
+    <span class="tag">Sensitive Fieldwork</span><span class="tag">Pricing Strategy</span>
+  </div>
+</div>
+</div>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ PROBLEM ════════════════════ -->
+<section id="problem">
+<div class="rv"><div class="sec-label">01 — Problem</div>
+<h2>Founders had a prototype but no answers</h2>
+<p style="max-width:640px;">SugarWise was built by a mother-and-aunt team who had lived paediatric T1D caregiving firsthand. They had conviction — but knew that without research, they were making expensive product bets in the dark.</p></div>
+
+<div class="grid2" style="margin-top:1.5rem;">
+  <div class="card rose rv">
+    <div class="card-icon">❌</div>
+    <h3>Are there fundamental needs left unmet?</h3>
+    <p> Founders developed the product with a specific scenario in mind: parents returning to familiar restaurants who couldn't recall previous insulin doses for the same meal — and needed a simple way to log and retrieve that information quickly. Was that their real need?</p>
+  </div>
+  <div class="card rose rv d1">
+    <div class="card-icon">❌</div>
+    <h3>Which features justify payment?</h3>
+    <p>The team had 10+ features in scope. No evidence about which ones users valued enough to pay for.</p>
+  </div>
+  <div class="card rose rv d2">
+    <div class="card-icon">❌</div>
+    <h3>What is the viable price point?</h3>
+    <p>Charging for a health app in Italy requires navigating deep cultural resistance to paid healthcare tools.</p>
+  </div>
+  <div class="card rose rv d3">
+    <div class="card-icon">❌</div>
+    <h3>Are we targeting the right users?</h3>
+    <p>Pump users and pen users were treated as one audience. Was that assumption valid?</p>
+  </div>
+</div>
+
+<div class="hbox amber rv">
+  <h3>⚠️ The risk</h3>
+  <p>Building the wrong product and wasting 6+ months of engineering time without validating that the product actually solved a real problem in a way users would pay for.</p>
+</div>
+
+<div class="hbox purple rv" style="margin-top:1rem;">
+  <h3>🎯 Mission</h3>
+  <p style="font-size:1.1rem;font-weight:700;color:var(--text);">Validate product-market fit and define the go-to-market strategy before a single line of production code was written.</p>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ PROCESS — AFFIRMATIVE NARRATIVE ════════════════════ -->
+<section id="process">
+<div class="rv"><div class="sec-label">02 — Research Process</div>
+<h2>How I ran a 3-phase programme to de-risk the product</h2>
+<p style="max-width:640px;">Each phase had a specific question to answer, a deliberate method choice, and a concrete output that fed the next phase. Nothing was arbitrary.</p></div>
+
+<!-- NARRATIVE TRACK -->
+<div class="narrative" style="margin-top:2.5rem;">
+
+  <!-- PHASE 1 -->
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 1</div>
+      <span class="step-type problem">Problem</span>
+      <div class="n-dot problem"></div>
+    </div>
+    <div class="n-right">
+      <h3>The problem I was solving for</h3>
+      <p>The founding team built around a specific moment: a parent back at the same restaurant, ordering the same pizza, with no memory of how much insulin they'd given their child last time. The assumption was that logging and recalling meal-specific doses was the core struggle. Before building further, I needed to pressure-test that against real caregiving behaviour — and find out whether that scenario was truly where families felt the most friction.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 1</div>
+      <span class="step-type decision">Decision</span>
+      <div class="n-dot decision"></div>
+    </div>
+    <div class="n-right">
+      <h3>The method I chose — and why</h3>
+      <p>I designed <strong>two-part moderated sessions</strong>: 30 minutes of lived experience exploration <em>before</em> any prototype interaction. I made this decision deliberately — showing the prototype first would have anchored users on the product rather than revealing their real mental models. I recruited through regional Facebook diabetes groups after finding professional networks too slow and thin.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 1</div>
+      <span class="step-type action">Action</span>
+      <div class="n-dot action"></div>
+    </div>
+    <div class="n-right">
+      <h3>What I did</h3>
+      <p>I conducted <strong>6 in-depth interviews</strong> via Zoom with parents of children aged 4–10. Remote sessions were a deliberate choice — they let me observe the home caregiving environment in real time. I ran thematic analysis across all sessions and compiled a prioritised friction matrix of 8 critical issues for the design team.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 1</div>
+      <span class="step-type impact">Impact</span>
+      <div class="n-dot impact"></div>
+    </div>
+    <div class="n-right">
+      <h3>What changed as a result</h3>
+      <p>The core product narrative was reframed. The problem was <em>not</em> the maths on carbs — it was the <strong>constant cognitive weight</strong> of deciding, delegating, and managing uncertainty across every context of family life. This reframe changed the product's value proposition entirely: from calculator to cognitive relief partner.</p>
+      <p class="quote">"Our whole day revolves around insulin and meals... we try to live like before, even if it's not ideal." — Mother of 8-year-old</p>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="n-step rv" style="margin-top:1.5rem;">
+    <div class="n-left">
+      <div class="step-num">Phase 2</div>
+      <span class="step-type problem">Problem</span>
+      <div class="n-dot problem"></div>
+    </div>
+    <div class="n-right">
+      <h3>The problem I was solving for</h3>
+      <p>Phase 1 produced 8 friction points and a redesign. But redesigning without re-testing is just guessing. I needed to prove that the changes actually resolved the original problems — and hadn't created new ones.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 2</div>
+      <span class="step-type decision">Decision</span>
+      <div class="n-dot decision"></div>
+    </div>
+    <div class="n-right">
+      <h3>The method I chose — and why</h3>
+      <p>I designed a <strong>comparative prototype test</strong> specifically targeting the 8 friction points from Phase 1. Rather than running an open exploration, I structured tasks to generate direct before/after evidence. We also decided at this point <em>not</em> to test the pen user flow — it was unready, and validating an unfinished design would have produced misleading data. I scoped it as a Phase 4 recommendation instead.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 2</div>
+      <span class="step-type action">Action</span>
+      <div class="n-dot action"></div>
+    </div>
+    <div class="n-right">
+      <h3>What I did</h3>
+      <p>I ran <strong>5 targeted follow-up interviews</strong> with new participants, using the same Facebook group recruitment channel validated in Phase 1. Each session tested specific redesigned flows with a think-aloud protocol, generating direct comparative evidence on each intervention.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 2</div>
+      <span class="step-type impact">Impact</span>
+      <div class="n-dot impact"></div>
+    </div>
+    <div class="n-right">
+      <h3>What changed as a result</h3>
+      <p>6 of 8 friction points were validated as resolved. The glass-box AI transparency feature generated the single most positive reaction of the entire programme. The "relevant factors" module (stress, activity, illness) was called out as something users had <em>never seen in any other app</em> — validating a major differentiator.</p>
+      <p class="quote">"This relevant factors section is something we've never found in any app — it would be a huge help." — Father of 12-year-old</p>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="n-step rv" style="margin-top:1.5rem;">
+    <div class="n-left">
+      <div class="step-num">Phase 3</div>
+      <span class="step-type problem">Problem</span>
+      <div class="n-dot problem"></div>
+    </div>
+    <div class="n-right">
+      <h3>The problem I was solving for</h3>
+      <p>The product was validated qualitatively. But to pitch investors and build a sustainable business, the team needed quantified demand, a defensible price point, and an institutional endorsement. Qualitative data alone couldn't provide that.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 3</div>
+      <span class="step-type decision">Decision</span>
+      <div class="n-dot decision"></div>
+    </div>
+    <div class="n-right">
+      <h3>The method I chose — and why</h3>
+      <p>I chose the <strong>Van Westendorp Price Sensitivity Meter</strong> over standard price questions because PSM extracts four psychological thresholds without anchoring respondents to a number — critical in a context where users default to expecting healthcare tools to be free. I simultaneously commissioned a <strong>structured expert interview</strong> with the President of local pediatric diabetes association to stress-test the business model from the institutional side.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 3</div>
+      <div class="n-dot action"></div>
+    </div>
+    <div class="n-right">
+      <h3>What I did</h3>
+      <p>I designed and deployed a <strong>20-question online survey</strong> (n=54) via local association's Facebook network — a partnership established by leveraging the community trust built in earlier phases. I screened data for internal inconsistencies, excluding 6 responses with logical contradictions before analysis, and ran full segmentation by therapy type (pump vs pen).</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 3</div>
+      <span class="step-type impact">Impact</span>
+      <div class="n-dot impact"></div>
+    </div>
+    <div class="n-right">
+      <h3>What changed as a result</h3>
+      <p>The go-to-market strategy was pivoted. Pen users showed 3× higher willingness to pay and an 84% premium conversion rate — versus 71% for pump users. This single finding changed who the product should target first, directly reducing CAC and increasing launch conversion probability. Additionally, the expert interview surfaced an entirely new B2B revenue stream: restaurant nutritional certification, which became the third pillar of the business model.</p>
+    </div>
+  </div>
+
+</div><!-- /narrative -->
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ FINDINGS ════════════════════ -->
+<section id="findings">
+<div class="rv"><div class="sec-label">03 — Key Findings</div>
+<h2>What the data said — and what it changed</h2></div>
+
+<div class="grid2">
+  <div class="card rv">
+    <div class="card-icon">🧠</div>
+    <h3>The mental load IS the disease</h3>
+    <p>The core struggle was not carb calculation accuracy — it was the constant cognitive weight of deciding, delegating, and managing uncertainty 24/7. This reframed the entire product value proposition.</p>
+    <p class="quote" style="font-style:italic;font-size:.82rem;color:var(--dim);border-left:2px solid var(--acc);padding-left:.6rem;margin-top:.6rem;">"Our whole day revolves around insulin and meals." — Mother, 8-year-old</p>
+  </div>
+  <div class="card rv d1">
+    <div class="card-icon">📐</div>
+    <h3>42 variables, not just carbs</h3>
+    <p>Over 40 factors affect blood glucose: stress, hormones, exercise, food order, illness. A linear carb calculator was always going to fail. This drove the adaptive algorithm redesign.</p>
+  </div>
+  <div class="card rv d2">
+    <div class="card-icon">🔍</div>
+    <h3>Transparency IS the feature</h3>
+    <p>AI distrust was high — parents needed to stay in control of their child's dosing. Showing calculation logic ("glass box") measurably increased trust and acceptance rates.</p>
+  </div>
+  <div class="card rv d3">
+    <div class="card-icon">🎉</div>
+    <h3>The need to say "yes"</h3>
+    <p>Families wanted social normalcy — birthday cakes, restaurants, school lunches — not just glucose control. The app needed to enable confidence in social contexts, not just at the kitchen table.</p>
+  </div>
+</div>
+
+<!-- Feature WTP bars -->
+<div class="rv" style="margin-top:2.5rem;">
+  <h3 style="margin-bottom:.3rem;">Which features users would actually pay for</h3>
+  <p style="margin-bottom:1rem;">Quantitative survey results (n=54) — premium feature willingness to pay:</p>
+  <div class="bars">
+    <div class="bar-row"><div class="bar-label">📷 Unlimited photo carb estimation</div><div class="bar-track"><div class="bar-fill" data-p="61"></div></div><div class="bar-pct">61%</div></div>
+    <div class="bar-row"><div class="bar-label">🧮 Adaptive bolus calculator</div><div class="bar-track"><div class="bar-fill" data-p="46"></div></div><div class="bar-pct">46%</div></div>
+    <div class="bar-row"><div class="bar-label">👨‍⚕️ Professional consultations</div><div class="bar-track"><div class="bar-fill" data-p="28"></div></div><div class="bar-pct">28%</div></div>
+    <div class="bar-row"><div class="bar-label">🤖 AI insights &amp; reports</div><div class="bar-track"><div class="bar-fill" data-p="26"></div></div><div class="bar-pct">26%</div></div>
+  </div>
+</div>
+
+<div class="stat-row rv">
+  <div class="stat"><div class="sn g">91%</div><div class="sl">Would use daily or try to verify effectiveness</div></div>
+  <div class="stat"><div class="sn p">74%</div><div class="sl">Overall premium conversion rate</div></div>
+  <div class="stat"><div class="sn t">84%</div><div class="sl">Premium conversion — pen (multi-injection) users</div></div>
+  <div class="stat"><div class="sn a">€4.50</div><div class="sl">Optimal monthly price (Van Westendorp lower bound)</div></div>
+</div>
+
+<div class="hbox teal rv">
+  <h3>💡 The segmentation insight that changed everything</h3>
+  <p>Pen users showed 17% higher willingness to pay and an 84% premium conversion rate vs 71% for pump users. Pump users already have automated dosing built into hardware. Pen users manage calculations manually — the app fills a genuine gap. <strong>This finding pivoted the go-to-market from broad to precision targeting.</strong></p>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ DECISIONS ════════════════════ -->
+<section id="decisions">
+<div class="rv"><div class="sec-label">04 — Methodological Decisions</div>
+<h2>Why I chose these methods</h2>
+<p style="max-width:640px;">Good research isn't about using every method — it's about knowing which method earns which type of confidence. Here's the reasoning behind every major decision.</p></div>
+
+<table class="dt rv">
+  <thead><tr><th>Decision point</th><th>What I chose</th><th>What I ruled out &amp; why</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Interview structure — Phase 1</td>
+      <td>Empathy first, prototype second</td>
+      <td>Task-first: would have anchored users on the product before revealing real mental models</td>
+      <td><span class="pill p">Surfaced cognitive load insight</span></td>
+    </tr>
+    <tr>
+      <td>Session format</td>
+      <td>Remote Zoom with screen-share</td>
+      <td>In-person: would have excluded isolated participants and removed natural caregiving context</td>
+      <td><span class="pill g">Richer contextual data</span></td>
+    </tr>
+    <tr>
+      <td>Recruitment channel (Phase 2+)</td>
+      <td>Facebook diabetes groups exclusively</td>
+      <td>Professional networks: too slow, insufficient volume</td>
+      <td><span class="pill g">54 survey responses + 37 volunteers</span></td>
+    </tr>
+    <tr>
+      <td>Pricing research method</td>
+      <td>Van Westendorp PSM</td>
+      <td>Direct price question: anchors responses, especially problematic where free-healthcare expectation exists</td>
+      <td><span class="pill g">Validated €4.50 optimal price</span></td>
+    </tr>
+    <tr>
+      <td>Stakeholder validation</td>
+      <td>Expert interview — President of the local pediatric diabetes association</td>
+      <td>User data alone: insufficient to validate institutional adoption pathways</td>
+      <td><span class="pill a">Identified new B2B revenue stream</span></td>
+    </tr>
+    <tr>
+      <td>Pen user prototype testing</td>
+      <td>Explicitly deferred to Phase 4</td>
+      <td>Testing an unfinished pen flow: would have produced misleading usability data</td>
+      <td><span class="pill p">Clear roadmap recommendation</span></td>
+    </tr>
+  </tbody>
+</table>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ PROTOTYPE EVOLUTION ════════════════════ -->
+<section id="evolution">
+<div class="rv"><div class="sec-label">05 — Prototype Evolution</div>
+<h2>8 friction points. 8 targeted fixes. Re-tested.</h2>
+<p style="max-width:640px;">Each finding from Phase 1 became a specific design brief. Each fix was tested in Phase 2. Here's the before/after evidence.</p></div>
+
+<div class="acc-wrap">
+  <div class="acc-item">
+    <button class="acc-btn">
+      <span>🔢 Ambiguous nutritional values — "is this 100g or my portion?"</span>
+      <span class="acc-arr">▼</span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-pair">
+        <div class="acc-side"><div class="as-label before">🔴 Before</div><p style="font-size:.82rem;">Users couldn't tell if macro values referred to a 100g standard or their estimated portion — undermining trust in every calculation.</p></div>
+        <div class="acc-side"><div class="as-label after">🟢 After</div><p style="font-size:.82rem;">Dual-column display showing both values simultaneously, plus explicit portion weight. Validated as "resolved" in Phase 2. ✅</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="acc-item">
+    <button class="acc-btn">
+      <span>🤖 AI distrust — "how do I know this calculation is safe?"</span>
+      <span class="acc-arr">▼</span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-pair">
+        <div class="acc-side"><div class="as-label before">🔴 Before</div><p style="font-size:.82rem;">Black-box AI suggestions felt unsafe when the stakes were a child's insulin dose. Parents felt they couldn't verify or trust the output.</p></div>
+        <div class="acc-side"><div class="as-label after">🟢 After</div><p style="font-size:.82rem;">"Glass box" calculation view shows every variable and logic step. Users described feeling "supported but always in control." ✅</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="acc-item">
+    <button class="acc-btn">
+      <span>📊 Missing variable factors — stress, exercise, illness not tracked</span>
+      <span class="acc-arr">▼</span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-pair">
+        <div class="acc-side"><div class="as-label before">🔴 Before</div><p style="font-size:.82rem;">App only handled carbohydrates despite 40+ variables affecting blood glucose. The formula felt incomplete and frustrating in complex real-world situations.</p></div>
+        <div class="acc-side"><div class="as-label after">🟢 After</div><p style="font-size:.82rem;">"Relevant factors" module added within the meal-logging flow. Phase 2: "We've never seen this in any app — it would be a huge help." ✅</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="acc-item">
+    <button class="acc-btn">
+      <span>📱 No barcode scanner — forcing users to switch apps constantly</span>
+      <span class="acc-arr">▼</span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-pair">
+        <div class="acc-side"><div class="as-label before">🔴 Before</div><p style="font-size:.82rem;">Users switched to Yuka for packaged food scanning then returned to the app — a daily friction point that fragmented the experience.</p></div>
+        <div class="acc-side"><div class="as-label after">🟢 After</div><p style="font-size:.82rem;">Native barcode scanning integrated. "Everything in the same place" cited as significant quality-of-life improvement. ✅</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="acc-item">
+    <button class="acc-btn">
+      <span>💉 Interface mismatch for pen users — wrong mental model entirely</span>
+      <span class="acc-arr">▼</span>
+    </button>
+    <div class="acc-body">
+      <div class="acc-pair">
+        <div class="acc-side"><div class="as-label before">🔴 Before</div><p style="font-size:.82rem;">Interface designed around pump logic. Pen users think in "units" — not complex bolus parameters. Terms like "extended bolus" created confusion and distrust.</p></div>
+        <div class="acc-side"><div class="as-label after">🟢 Recommendation</div><p style="font-size:.82rem;">Dedicated pen flow prototyped but deliberately not tested within this programme. Scoped as Phase 4 priority — highest-value segment, highest unmet need. 🗓</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ IMPACT ════════════════════ -->
+<section id="impact">
+<div class="rv"><div class="sec-label">06 — Research Impact</div>
+<h2>What the research actually changed</h2>
+<p style="max-width:640px;">Research has value only when it changes decisions. Every finding had a downstream consequence.</p></div>
+
+<div class="grid2">
+  <div class="card green rv">
+    <div class="card-icon">🎯</div>
+    <h3>Go-to-market pivot</h3>
+    <p>Segmentation data identified pen users as 3× more valuable early adopters. Research recommended pen-first, backed by quantified WTP data — directly reducing CAC and increasing launch conversion probability.</p>
+  </div>
+  <div class="card teal rv d1">
+    <div class="card-icon">💰</div>
+    <h3>Defensible pricing model</h3>
+    <p>Van Westendorp produced a validated price range of €4.50–€10.00/month. Expert interview surfaced a one-time €20 access fee as culturally superior to monthly billing — a finding not in the original research plan.</p>
+  </div>
+  <div class="card purple rv d2">
+    <div class="card-icon">🏗️</div>
+    <h3>MVP feature hierarchy</h3>
+    <p>Photo estimation (61% WTP) validated as the hero premium feature — not the bolus calculator. This directly informed sprint prioritisation and engineering resource allocation.</p>
+  </div>
+  <div class="card rose rv">
+    <div class="card-icon">🔬</div>
+    <h3>Algorithm reframed</h3>
+    <p>Finding that 40+ variables mattered led to a fundamental product pivot: from carb calculator to adaptive decision-support system. This changed the core value proposition and technical architecture.</p>
+  </div>
+  <div class="card rv d1">
+    <div class="card-icon">📋</div>
+    <h3>Prioritised research roadmap</h3>
+    <p>Delivered a Phase 4 recommendation: dedicated pen user prototype validation with defined KPIs and recruitment channels — ensuring continuity and no loss of institutional knowledge.</p>
+  </div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ ETHICS ════════════════════ -->
+<section id="ethics">
+<div class="rv"><div class="sec-label">07 — Ethics &amp; Operational Rigour</div>
+<h2>The work behind the work</h2>
+<p style="max-width:640px;">Researching families around a chronic childhood illness requires operational and ethical precision that goes well beyond standard UX practice.</p></div>
+
+<div class="grid3">
+  <div class="card rv"><div class="card-icon">🛡️</div><h3>Participant protection</h3><p>Sessions designed with explicit stop-points for emotional distress. Sessions were ready to be shortened when participants became upset discussing diagnosis trauma — data completeness was never prioritised over participant safety.</p></div>
+  <div class="card rv d1"><div class="card-icon">📋</div><h3>Informed consent</h3><p>All participants briefed on data use, audience, and right to withdraw. Consent confirmed at session start — not assumed from recruitment agreement.</p></div>
+  <div class="card rv d2"><div class="card-icon">🔒</div><h3>Data integrity</h3><p>6 survey responses excluded for internal logical contradictions before analysis. Documented transparently in the final report — no silent exclusions.</p></div>
+  <div class="card rv"><div class="card-icon">⚖️</div><h3>Representation awareness</h3><p>83% female participation flagged as reflecting real caregiving distribution (mothers primary in 72% of cases nationally) — not a recruitment failure. Context built into all analysis and recommendations.</p></div>
+  <div class="card rv d1"><div class="card-icon">🧭</div><h3>Business alignment</h3><p>Maintained independence between user advocacy and business viability. Where user expectations (free provision) conflicted with sustainability, both perspectives were presented clearly with evidence-based recommendations.</p></div>
+  <div class="card rv d2"><div class="card-icon">📌</div><h3>Scope discipline</h3><p>When pen user complexity emerged mid-project, I resisted testing an unfinished flow. Unvalidated changes produce unreliable data. Scoped clearly, documented the gap, made it a priority recommendation.</p></div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ REFLECTION ════════════════════ -->
+<section id="reflection">
+<div class="rv"><div class="sec-label">08 — Reflection</div>
+<h2>What I'd do differently — and what I'd protect</h2></div>
+
+<div class="hbox purple rv">
+  <h3>✅ The decision I'd protect</h3>
+  <p>The two-part interview structure — empathy before prototype — was a judgment call I almost didn't make under time pressure. By sequencing empathy first, I surfaced the cognitive load insight that became the entire product narrative. If I'd led with the prototype, users would have told me what they thought of the app. Instead, they told me what their life was actually like.</p>
+</div>
+
+<div class="hbox teal rv">
+  <h3>🔄 What I'd do differently</h3>
+  <p>I'd screen for therapy type (pen vs pump) in Phase 1 recruitment. The segmentation insight came in Phase 2 — too late to build a pen prototype within this programme. Given that pen users became the highest-value early adopter segment, earlier discovery would have allowed me to test a dedicated pen flow within scope rather than handing it off.</p>
+</div>
+
+<div class="hbox amber rv">
+  <h3>💡 The assumption that didn't survive users</h3>
+  <p>The founding team believed the core anxiety was about getting the maths right. Users taught me the anxiety was about <em>everything surrounding</em> the maths — school, delegation, social situations, fear of failure at 2am. That reframe was the most important output of the entire programme. It changed not just the product, but how the startup communicates its value.</p>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ ABOUT ════════════════════ -->
+<section id="about">
+<div class="rv"><div class="sec-label">09 — About Me</div>
+<h2>Maria Elena Lasiu</h2>
+<p style="max-width:620px;">UX Researcher with 3+ years of end-to-end research experience across startups, global NGOs, and European institutions. I work at the intersection of user behaviour, product strategy, and data — turning complex signals into decisions that stick.</p></div>
+
+<div class="skills-grid">
+  <div>
+    <h3 style="margin-bottom:.75rem;">Research &amp; UX skills</h3>
+    <ul class="skill-list">
+      <li>Mixed methods (qualitative + quantitative)</li>
+      <li>Moderated usability testing</li>
+      <li>In-depth interviews &amp; sensitive fieldwork</li>
+      <li>Van Westendorp Price Sensitivity Meter</li>
+      <li>Survey design &amp; scripting</li>
+      <li>Market &amp; user segmentation</li>
+      <li>Jobs-to-be-Done (JTBD) frameworks</li>
+      <li>Stakeholder &amp; expert interviews</li>
+      <li>Prototype testing (Figma)</li>
+    </ul>
+  </div>
+  <div>
+    <h3 style="margin-bottom:.75rem;">Technical &amp; analytical tools</h3>
+    <ul class="skill-list">
+      <li>R — statistical analysis &amp; reporting</li>
+      <li>Python — pandas, matplotlib, AI coding</li>
+      <li>Power BI — DAX, dashboards, Power Query</li>
+      <li>SQL (intermediate)</li>
+      <li>Q — survey analytics platform</li>
+      <li>GPT Sheets — AI-assisted qualitative coding</li>
+      <li>A/B testing &amp; cohort analysis</li>
+      <li>Excel — pivot tables, advanced formulas</li>
+    </ul>
+  </div>
+</div>
+
+<div class="grid3" style="margin-top:2rem;">
+  <div class="card rv"><div class="card-icon">📊</div><h3>Focaldata · Research Manager</h3><p>10+ projects for Flutter and the Gates Foundation. 40% reduction in qualitative analysis time via AI-assisted coding. 99.9% data integrity across 10,000+ open-text responses.</p></div>
+  <div class="card rv d1"><div class="card-icon">🇪🇺</div><h3>Ecorys · Research Manager</h3><p>Power BI dashboards for the European Parliament's Climate Pact. Published research for the European Commission. 25% reduction in manual effort via R automation.</p></div>
+  <div class="card rv d2"><div class="card-icon">🎓</div><h3>LSE + Bocconi (Double Degree)</h3><p>MSc International &amp; European Public Policy (LSE). MSc Politics &amp; Policy Analysis, Cum Laude — Bocconi University.</p></div>
+</div>
+</section>
+
+<!-- ════════════════════ CTA ════════════════════ -->
+<div class="cta rv">
+  <div class="sec-label" style="text-align:center;margin-bottom:.75rem;">Get in touch</div>
+  <h2>Let's talk research</h2>
+  <p style="color:var(--muted);">Looking for a researcher who can go from empathy to evidence to strategy? I'd love to connect.</p>
+  <div class="cta-btns">
+    <a href="https://www.linkedin.com/in/maria-elena-lasiu/" target="_blank" class="btn btn-p">LinkedIn →</a>
+    <a href="mailto:mariaelenalasiu.insights@gmail.com" class="btn btn-s">Send an email</a>
+  </div>
+</div>
+
+<footer>© 2025 Maria Elena Lasiu · UX Researcher · London, UK</footer>
+
+<script>
+// Progress bar
+window.addEventListener('scroll',()=>{
+  const p=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  document.getElementById('pb').style.width=p+'%';
+});
+
+// Reveal on scroll + bar animation
+const rvEls=document.querySelectorAll('.rv');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('vi');
+      e.target.querySelectorAll('.bar-fill').forEach(b=>{b.style.width=b.dataset.p+'%';});
+    }
+  });
+},{threshold:.1});
+rvEls.forEach(r=>io.observe(r));
+
+// Accordion
+document.querySelectorAll('.acc-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.parentElement;
+    const open=item.classList.contains('open');
+    document.querySelectorAll('.acc-item').forEach(i=>i.classList.remove('open'));
+    if(!open)item.classList.add('open');
+  });
+});
+
+// TOC
+const secs=['top','problem','process','findings','decisions','evolution','impact','ethics','reflection','about'];
+const dots=document.querySelectorAll('.td');
+const tio=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      dots.forEach(d=>d.classList.remove('active'));
+      const dot=document.querySelector(`.td[data-section="${e.target.id}"]`);
+      if(dot)dot.classList.add('active');
+    }
+  });
+},{threshold:.5});
+secs.forEach(id=>{const el=document.getElementById(id);if(el)tio.observe(el);});
+dots.forEach(d=>d.addEventListener('click',()=>{
+  const el=document.getElementById(d.dataset.section);
+  if(el)el.scrollIntoView({behavior:'smooth'});
+}));
+</script>
+</body>
+</html>

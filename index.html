@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Maria Elena Lasiu — UX Researcher & Product Analyst</title>
+<meta name="description" content="Maria Elena Lasiu — UX Researcher & Product Analyst. 3+ years leading end-to-end research for the European Commission, Gates Foundation, and healthtech startups."/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --bg:#080808;--s1:#111;--s2:#1a1a1a;--s3:#222;
+  --border:#2c2c2c;
+  --acc:#7c6af7;--acc2:#a78bfa;--teal:#2dd4bf;--green:#4ade80;--amber:#fbbf24;--rose:#f87171;
+  --glow:rgba(124,106,247,.18);
+  --text:#f0f0f0;--muted:#888;--dim:#555;
+  --r:14px;--r2:22px;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7;overflow-x:hidden;}
+
+/* ── PROGRESS ── */
+#pb{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--acc),var(--teal));width:0;z-index:1000;transition:width .1s linear;box-shadow:0 0 12px var(--acc);}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(8,8,8,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;}
+.nav-brand{font-size:.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-decoration:none;}
+.nav-brand b{color:var(--acc2);}
+.nav-links{display:flex;gap:1.5rem;list-style:none;}
+.nav-links a{font-size:.78rem;color:var(--muted);text-decoration:none;transition:color .25s;}
+.nav-links a:hover{color:var(--acc2);}
+.nav-cta{background:linear-gradient(135deg,var(--acc),#6366f1);color:#fff;padding:.45rem 1.1rem;border-radius:100px;font-size:.78rem;font-weight:600;text-decoration:none;transition:opacity .2s;}
+.nav-cta:hover{opacity:.85;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1100px;margin:0 auto;padding:8rem 2.5rem 5rem;}
+@media(max-width:760px){.hero{grid-template-columns:1fr;padding:7rem 1.5rem 4rem;}.hero-img-wrap{display:none;}}
+.hero-left{}
+.chip{display:inline-flex;align-items:center;gap:.5rem;background:var(--glow);border:1px solid rgba(124,106,247,.3);border-radius:100px;padding:.3rem 1rem;font-size:.72rem;color:var(--acc2);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.75rem;width:fit-content;}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acc2);flex-shrink:0;}
+h1{font-size:clamp(2.6rem,5vw,3.8rem);font-weight:900;line-height:1.05;letter-spacing:-.035em;margin-bottom:1.25rem;}
+.grad{background:linear-gradient(135deg,var(--acc2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:480px;margin-bottom:2rem;line-height:1.85;}
+.hero-btns{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.5rem;border-radius:100px;font-size:.85rem;font-weight:600;text-decoration:none;transition:transform .25s,box-shadow .25s,opacity .2s;}
+.btn-p{background:linear-gradient(135deg,var(--acc),#6366f1);color:#fff;box-shadow:0 4px 20px rgba(124,106,247,.3);}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,106,247,.4);}
+.btn-s{background:var(--s1);border:1px solid var(--border);color:var(--muted);}
+.btn-s:hover{border-color:var(--acc2);color:var(--acc2);transform:translateY(-2px);}
+.hero-stats{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.hstat{display:flex;flex-direction:column;}
+.hstat .hn{font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--acc2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.hstat .hl{font-size:.72rem;color:var(--muted);margin-top:.2rem;}
+
+/* hero photo */
+.hero-img-wrap{position:relative;display:flex;align-items:flex-end;justify-content:center;}
+.hero-img-bg{width:340px;height:440px;border-radius:30px;background:linear-gradient(160deg,rgba(124,106,247,.15),rgba(45,212,191,.08));border:1px solid var(--border);display:flex;align-items:flex-end;justify-content:center;overflow:hidden;position:relative;}
+.avatar-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.75rem;color:var(--muted);font-size:.82rem;}
+.avatar-circle{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--teal));display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#fff;font-weight:900;}
+.hero-badge{position:absolute;bottom:1.5rem;right:-1.5rem;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:.75rem 1.1rem;backdrop-filter:blur(8px);}
+.hero-badge .hb-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:.2rem;}
+.hero-badge .hb-val{font-size:.88rem;font-weight:700;color:var(--text);}
+.avail-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:.4rem;box-shadow:0 0 6px var(--green);}
+
+/* ── SECTIONS ── */
+.container{max-width:1100px;margin:0 auto;padding:5rem 2.5rem;}
+@media(max-width:760px){.container{padding:4rem 1.5rem;}}
+hr.div{border:none;border-top:1px solid var(--border);max-width:1100px;margin:0 auto;}
+.sec-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--acc2);margin-bottom:.5rem;}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.025em;margin-bottom:.75rem;}
+h3{font-size:.95rem;font-weight:700;margin-bottom:.35rem;color:var(--text);}
+p{color:var(--muted);line-height:1.8;margin-bottom:.85rem;}
+p:last-child{margin-bottom:0;}
+
+/* ── ABOUT SPLIT ── */
+.about-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:4rem;align-items:start;}
+@media(max-width:760px){.about-grid{grid-template-columns:1fr;gap:2rem;}}
+.about-lead{font-size:1.1rem;color:var(--text);font-weight:500;line-height:1.7;margin-bottom:1.25rem;}
+.about-body{font-size:.9rem;color:var(--muted);line-height:1.85;}
+
+/* ── EXPERTISE CARDS ── */
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.5rem;}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1.5rem;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;transition:border-color .25s,transform .25s;}
+.card:hover{border-color:rgba(124,106,247,.4);transform:translateY(-2px);}
+.card-icon{width:42px;height:42px;border-radius:var(--r);background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem;}
+.card.teal{border-left:3px solid var(--teal);}
+.card.green{border-left:3px solid var(--green);}
+.card.amber{border-left:3px solid var(--amber);}
+.card.purple{border-left:3px solid var(--acc2);}
+.card.rose{border-left:3px solid var(--rose);}
+
+/* ── EXPERIENCE TIMELINE ── */
+.exp-list{display:flex;flex-direction:column;gap:0;margin-top:1.5rem;position:relative;}
+.exp-list::before{content:"";position:absolute;left:10px;top:8px;bottom:8px;width:1px;background:linear-gradient(to bottom,var(--acc),var(--teal),transparent);}
+.exp-item{display:grid;grid-template-columns:48px 1fr;gap:1rem;padding-bottom:2rem;position:relative;}
+.exp-item:last-child{padding-bottom:0;}
+.exp-dot-col{display:flex;flex-direction:column;align-items:center;padding-top:.35rem;}
+.exp-dot{width:20px;height:20px;border-radius:50%;background:var(--s2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.65rem;z-index:1;flex-shrink:0;}
+.exp-dot.acc{border-color:var(--acc2);background:rgba(124,106,247,.15);}
+.exp-dot.teal{border-color:var(--teal);background:rgba(45,212,191,.12);}
+.exp-dot.amber{border-color:var(--amber);background:rgba(251,191,36,.12);}
+.exp-content{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem 1.5rem;}
+.exp-header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.5rem;}
+.exp-org{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--acc2);margin-bottom:.2rem;}
+.exp-title{font-size:1rem;font-weight:700;color:var(--text);}
+.exp-date{font-size:.72rem;color:var(--dim);white-space:nowrap;flex-shrink:0;}
+.exp-bullets{list-style:none;margin-top:.65rem;display:flex;flex-direction:column;gap:.35rem;}
+.exp-bullets li{font-size:.82rem;color:var(--muted);display:flex;gap:.6rem;line-height:1.6;}
+.exp-bullets li::before{content:"→";color:var(--acc2);flex-shrink:0;font-size:.72rem;margin-top:.2rem;}
+
+/* ── SKILLS GRID ── */
+.skills-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin-top:1.5rem;}
+.skill-group{}
+.sg-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--acc2);margin-bottom:.75rem;}
+.skill-list{list-style:none;display:flex;flex-direction:column;gap:.1rem;}
+.skill-list li{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);padding:.35rem 0;border-bottom:1px solid var(--border);}
+.skill-list li::before{content:"→";color:var(--acc2);font-size:.68rem;flex-shrink:0;}
+
+/* ── PORTFOLIO CARDS ── */
+.portfolio-grid{display:flex;flex-direction:column;gap:1.5rem;margin-top:1.5rem;}
+.proj-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;display:grid;grid-template-columns:1fr 1.4fr;transition:border-color .25s,transform .25s;}
+.proj-card:hover{border-color:rgba(124,106,247,.4);transform:translateY(-2px);}
+@media(max-width:700px){.proj-card{grid-template-columns:1fr;}}
+.proj-info{padding:2rem;}
+.proj-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:.4rem;}
+.proj-title{font-size:1.25rem;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:.5rem;line-height:1.25;}
+.proj-sub{font-size:.85rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem;}
+.tag{background:var(--s2);border:1px solid var(--border);border-radius:100px;padding:.2rem .65rem;font-size:.7rem;color:var(--muted);}
+.tag.acc{background:rgba(124,106,247,.1);border-color:rgba(124,106,247,.25);color:var(--acc2);}
+.tag.teal{background:rgba(45,212,191,.1);border-color:rgba(45,212,191,.25);color:var(--teal);}
+.tag.green{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.25);color:var(--green);}
+.proj-stats{display:flex;gap:1.25rem;margin-bottom:1.5rem;}
+.pstat .psn{font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,var(--acc2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.pstat .psl{font-size:.68rem;color:var(--dim);}
+.proj-link{display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:600;color:var(--acc2);text-decoration:none;border:1px solid rgba(124,106,247,.3);border-radius:100px;padding:.35rem .9rem;transition:background .2s;}
+.proj-link:hover{background:rgba(124,106,247,.1);}
+.proj-visual{background:linear-gradient(160deg,rgba(124,106,247,.1),rgba(45,212,191,.06));display:flex;align-items:center;justify-content:center;min-height:240px;position:relative;overflow:hidden;}
+.proj-visual .pv-inner{text-align:center;padding:2rem;}
+.proj-visual .pv-icon{font-size:3.5rem;margin-bottom:.75rem;}
+.proj-visual .pv-title{font-size:.78rem;font-weight:600;color:var(--muted);}
+.proj-visual .mock-screen{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:1rem;width:180px;text-align:left;}
+.mock-bar{height:8px;border-radius:4px;background:var(--s3);margin-bottom:.5rem;}
+.mock-bar.acc{background:linear-gradient(90deg,var(--acc),var(--teal));width:70%;}
+.mock-bar.w50{width:50%;}
+.mock-bar.w80{width:80%;}
+
+/* second proj - lighter bg */
+.proj-card.p2 .proj-visual{background:linear-gradient(160deg,rgba(45,212,191,.09),rgba(74,222,128,.05));}
+
+/* ── TESTIMONIALS ── */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-top:1.5rem;}
+.testi-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;}
+.testi-quote{font-size:.92rem;font-style:italic;color:var(--muted);line-height:1.7;margin-bottom:1rem;}
+.testi-quote::before{content:"\201C";font-size:1.5rem;color:var(--acc2);line-height:0;vertical-align:-.25em;margin-right:.1rem;}
+.testi-author{display:flex;align-items:center;gap:.75rem;}
+.testi-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--teal));display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0;}
+.testi-name{font-size:.82rem;font-weight:700;color:var(--text);}
+.testi-role{font-size:.7rem;color:var(--dim);}
+.testi-tag{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--acc2);margin-bottom:.75rem;}
+
+/* ── EDUCATION ── */
+.edu-list{display:flex;flex-direction:column;gap:1rem;margin-top:1.5rem;}
+.edu-item{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;}
+.edu-school{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--acc2);margin-bottom:.25rem;}
+.edu-degree{font-size:.95rem;font-weight:700;color:var(--text);}
+.edu-detail{font-size:.78rem;color:var(--muted);margin-top:.25rem;}
+.edu-right{text-align:right;flex-shrink:0;}
+.edu-grade{font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,var(--acc2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.edu-grade-label{font-size:.68rem;color:var(--dim);}
+
+/* ── CTA / CONTACT ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
+@media(max-width:700px){.contact-grid{grid-template-columns:1fr;}}
+.contact-left{}
+.contact-lead{font-size:1.05rem;color:var(--text);font-weight:500;line-height:1.75;margin-bottom:1.5rem;}
+.contact-links{display:flex;flex-direction:column;gap:.75rem;}
+.c-link{display:flex;align-items:center;gap:.75rem;color:var(--muted);text-decoration:none;font-size:.88rem;transition:color .2s;}
+.c-link:hover{color:var(--acc2);}
+.c-link-icon{width:36px;height:36px;border-radius:var(--r);background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.contact-form{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.75rem;}
+.form-group{margin-bottom:1rem;}
+.form-group label{display:block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:.4rem;}
+.form-group input,.form-group textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:.7rem 1rem;font-size:.85rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s;}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--acc2);}
+.form-group textarea{min-height:110px;resize:vertical;}
+.form-submit{width:100%;padding:.75rem;background:linear-gradient(135deg,var(--acc),#6366f1);color:#fff;border:none;border-radius:100px;font-size:.88rem;font-weight:700;cursor:pointer;transition:opacity .2s,transform .2s;}
+.form-submit:hover{opacity:.85;transform:translateY(-1px);}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:2rem 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.footer-brand{font-size:.78rem;color:var(--dim);}
+.footer-links{display:flex;gap:1.25rem;}
+.footer-links a{font-size:.75rem;color:var(--dim);text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:var(--acc2);}
+.avail-pill{display:inline-flex;align-items:center;gap:.4rem;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:100px;padding:.25rem .75rem;font-size:.72rem;color:var(--green);font-weight:600;}
+
+/* ── REVEAL ── */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.rv.vi{opacity:1;transform:none;}
+.rv.d1{transition-delay:.1s;} .rv.d2{transition-delay:.2s;} .rv.d3{transition-delay:.3s;} .rv.d4{transition-delay:.4s;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--acc);}
+</style>
+</head>
+<body>
+<div id="pb"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#top" class="nav-brand">Maria Elena <b>Lasiu</b></a>
+  <ul class="nav-links">
+    <li><a href="#expertise">Expertise</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div style="display:flex; align-items:center; gap:.75rem;">
+    <a href="https://calendar.app.google/pJgQeQu3t127NmUAA" class="nav-cta">Book a call ↗</a>
+    <a href="maria_elena_portfolio_it.html" class="btn-outline" 
+   style="font-size:.85rem; padding:.4rem .9rem; color:#ffffff; border-color:#ffffff;">🇮🇹 IT</a>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════ HERO ══════════════════════ -->
+<div id="top">
+<div class="hero">
+  <div class="hero-left">
+    <div class="chip rv">Hello! I am Maria Elena Lasiu</div>
+    <h1 class="rv">UX Researcher<br/>&amp; <span class="grad">Product Analyst</span></h1>
+    <p class="hero-sub rv">I turn complex human behaviour into clear product decisions. 3+ years leading end-to-end mixed-methods research for the European Commission, the Gates Foundation, and HealthTech startups.</p>
+
+    <div class="hero-btns rv">
+      <a href="#portfolio" class="btn btn-p">View portfolio →</a>
+      <a href="https://www.linkedin.com/in/maria-elena-lasiu/" target="_blank" class="btn btn-s">LinkedIn ↗</a>
+      <a href="https://github.com/MariaElenaLasiu/Portfolio" target="_blank" class="btn btn-s">GitHub ↗</a>
+    </div>
+
+    <div class="hero-stats rv">
+      <div class="hstat"><div class="hn">3+</div><div class="hl">Years of experience</div></div>
+      <div class="hstat"><div class="hn">10+</div><div class="hl">Countries researched</div></div>
+      <div class="hstat"><div class="hn">40%</div><div class="hl">Efficiency gain via AI</div></div>
+      <div class="hstat"><div class="hn">10k+</div><div class="hl">Responses analysed</div></div>
+    </div>
+  </div>
+
+  <div class="hero-img-wrap rv">
+    <div class="hero-img-bg">
+      <img src="images/maria-elena.jpeg" alt="Maria Elena Lasiu" 
+     style="width:100%; height:100%; object-fit:cover; border-radius:16px;">
+    </div>
+    <div class="hero-badge">
+      <div class="hb-label">Status</div>
+      <div class="hb-val"><span class="avail-dot"></span>Available for new projects</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<hr class="div"/>
+
+<!-- ══════════════════════ ABOUT ══════════════════════ -->
+<section id="about">
+<div class="container">
+  <div class="about-grid rv">
+    <div>
+      <div class="sec-label">About me</div>
+      <h2>I blend research rigour with product thinking</h2>
+      <p class="about-lead">I am a UX Researcher and Product Analyst dedicated to understanding people deeply and translating that understanding into decisions that matter.</p>
+      <p class="about-body">My background spans academic policy analysis (LSE, Bocconi), market research at scale (Focaldata), and European institution research (Ecorys / European Commission). What ties it all together is a commitment to research that doesn't stop at insights — it drives action.</p>
+      <p class="about-body">I specialise in mixed-methods programmes: qualitative discovery, iterative usability testing, and quantitative validation. I am comfortable leading sensitive fieldwork, navigating ethics, and presenting findings to executive and investor audiences.</p>
+      <p class="about-body" style="margin-top:.5rem;"><span class="avail-pill">🟢 Available for freelance work</span></p>
+    </div>
+    <div>
+      <div class="card rv" style="margin-bottom:1rem;">
+        <div class="card-icon">📍</div>
+        <h3>Based in London, UK</h3>
+        <p>Working remotely with clients across Europe. Fluent in English and Italian, upper-intermediate French.</p>
+      </div>
+      <div class="card rv d1">
+        <div class="card-icon">🎯</div>
+        <h3>What I do differently</h3>
+        <p>I apply UX research not just to products but to the entire product strategy. My research doesn't end with a deck — it produces roadmaps, pricing models, and go-to-market recommendations.</p>
+      </div>
+      <div class="card rv d2">
+        <div class="card-icon">🤝</div>
+        <h3>Who I work with</h3>
+        <p>Early-stage startups de-risking their MVP. Scale-ups validating new features. Research agencies serving enterprise clients. European institutions needing rigorous policy evidence.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="div"/>
+
+<!-- ══════════════════════ EXPERTISE ══════════════════════ -->
+<section id="expertise">
+<div class="container">
+  <div class="rv"><div class="sec-label">What I bring</div>
+  <h2>Core expertise</h2>
+  <p style="max-width:580px;">I operate across the full research cycle — from framing the right question to delivering business-ready recommendations.</p></div>
+
+  <div class="grid3">
+    <div class="card purple rv">
+      <div class="card-icon">🔬</div>
+      <h3>Mixed-methods research</h3>
+      <p>Qualitative discovery, in-depth interviews, moderated usability testing, and quantitative surveys — designed together so each phase informs the next.</p>
+    </div>
+    <div class="card teal rv d1">
+      <div class="card-icon">💰</div>
+      <h3>Pricing &amp; market validation</h3>
+      <p>Van Westendorp PSM, willingness-to-pay analysis, and user segmentation. I give product teams the evidence base for defensible pricing decisions.</p>
+    </div>
+    <div class="card green rv d2">
+      <div class="card-icon">📊</div>
+      <h3>Data analytics &amp; reporting</h3>
+      <p>R, Python, Power BI, SQL, Q. I process large datasets, build dashboards, and automate reporting — turning raw data into stakeholder-ready narratives.</p>
+    </div>
+    <div class="card amber rv">
+      <div class="card-icon">🧭</div>
+      <h3>Product strategy</h3>
+      <p>Jobs-to-be-Done, user journey mapping, roadmap prioritisation, and KPI definition. Research that feeds directly into product and go-to-market decisions.</p>
+    </div>
+    <div class="card rose rv d1">
+      <div class="card-icon">🛡️</div>
+      <h3>Sensitive &amp; ethical fieldwork</h3>
+      <p>Experience researching families in medical contexts, policy stakeholders, and vulnerable groups. Rigorous ethics, informed consent, and participant protection built in by default.</p>
+    </div>
+    <div class="card rv d2">
+      <div class="card-icon">⚙️</div>
+      <h3>AI-assisted workflows</h3>
+      <p>GPT Sheets for qualitative coding, AI-powered sentiment analysis, and automated insight delivery — achieving 40% reduction in analysis time without sacrificing rigour.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="div"/>
+
+<!-- ══════════════════════ EXPERIENCE ══════════════════════ -->
+<section id="experience">
+<div class="container">
+  <div class="rv"><div class="sec-label">Work history</div>
+  <h2>Experience</h2></div>
+
+  <div class="exp-list">
+
+    <div class="exp-item rv">
+      <div class="exp-dot-col"><div class="exp-dot acc">★</div></div>
+      <div class="exp-content">
+        <div class="exp-header">
+          <div><div class="exp-org">SugarWise · Freelance</div><div class="exp-title">UX Researcher &amp; Product Strategy</div></div>
+          <div class="exp-date">Jun 2025 – Present</div>
+        </div>
+        <ul class="exp-bullets">
+          <li>Orchestrated a 3-cycle mixed-methods research programme — qualitative usability testing, iterative prototype validation, and quantitative pricing analysis — de-risking an AI diabetes app for families with paediatric T1D.</li>
+          <li>Led sensitive fieldwork with vulnerable caregiving families; managed ethics, consent, and data integrity across 11 interviews and 54 survey responses.</li>
+          <li>Identified pen user segment with 3× higher willingness to pay, pivoting the go-to-market strategy and directly shaping the product roadmap and pricing model (€4.50 validated price point).</li>
+          <li>Collaborated with design and engineering on Figma prototype iterations, translating 8 research-identified friction points into validated design solutions.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item rv">
+      <div class="exp-dot-col"><div class="exp-dot teal">◆</div></div>
+      <div class="exp-content">
+        <div class="exp-header">
+          <div><div class="exp-org">Focaldata · London</div><div class="exp-title">Research Manager</div></div>
+          <div class="exp-date">May 2024 – Nov 2024</div>
+        </div>
+        <ul class="exp-bullets">
+          <li>Led 10+ end-to-end analytics projects on brand perception, performance benchmarking, and market analysis for global clients including Flutter and the Gates Foundation.</li>
+          <li>Designed and analysed large-scale surveys using Q, R, and Python, processing 10,000+ open-text responses with 99.9% data integrity.</li>
+          <li>Reduced qualitative analysis time by 40% by implementing AI-assisted coding workflows (GPT Sheets), delivering insights two days ahead of client deadlines.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item rv">
+      <div class="exp-dot-col"><div class="exp-dot amber">●</div></div>
+      <div class="exp-content">
+        <div class="exp-header">
+          <div><div class="exp-org">Ecorys · London</div><div class="exp-title">Research Manager</div></div>
+          <div class="exp-date">Sep 2023 – Apr 2024</div>
+        </div>
+        <ul class="exp-bullets">
+          <li>Conveyed complex technical findings to specialised and non-specialised audiences, influencing strategic decisions for the European Commission.</li>
+          <li>Built interactive Power BI dashboards to track KPIs for the European Parliament's Climate Pact Initiative, enabling real-time self-service data access for stakeholders.</li>
+          <li>Automated reporting with R scripts, achieving 25% reduction in manual effort and freeing 10 hours weekly for strategic analysis.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item rv">
+      <div class="exp-dot-col"><div class="exp-dot">○</div></div>
+      <div class="exp-content">
+        <div class="exp-header">
+          <div><div class="exp-org">Ecorys · London</div><div class="exp-title">Research Assistant</div></div>
+          <div class="exp-date">Sep 2022 – Aug 2023</div>
+        </div>
+        <ul class="exp-bullets">
+          <li>Developed research outputs on skills and workforce trends, contributing to policy briefs and long-form reports published by the European Commission.</li>
+          <li>Co-authored the Digital Education Content in the EU report — a publicly available Commission publication.</li>
+        </ul>
+      </div>
+    </div>
+
+        <div class="exp-item rv">
+      <div class="exp-dot-col"><div class="exp-dot">○</div></div>
+      <div class="exp-content">
+        <div class="exp-header">
+          <div><div class="exp-org">Bocconi University · Milan</div><div class="exp-title">Research Assistant</div></div>
+          <div class="exp-date">Oct 2021 – July 2022</div>
+        </div>
+        <ul class="exp-bullets">
+          <li> Conducted predictive analysis using advanced regression models to assess the impact automation on unionisation in Europe through R and Stata.</li>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<hr class="div"/>
+
+<!-- ══════════════════════ PORTFOLIO ══════════════════════ -->
+<section id="portfolio">
+<div class="container">
+  <div class="rv"><div class="sec-label">Case studies</div>
+  <h2>Portfolio highlights</h2>
+  <p style="max-width:580px;">End-to-end research programmes that changed product strategy, pricing models, and go-to-market plans.</p></div>
+
+  <div class="portfolio-grid">
+
+    <!-- Project 1 -->
+    <div class="proj-card rv">
+      <div class="proj-info">
+        <div class="proj-label">Paediatric Diabetes AI · 2025</div>
+        <div class="proj-title">Led research → 91% adoption + 74% premium conversion</div>
+        <div class="proj-sub">How I owned an end-to-end UX research &amp; prototype testing programme for families managing paediatric diabetes insulin dosing</div>
+        <div class="proj-tags">
+          <span class="tag acc">User Research</span>
+          <span class="tag teal">Pricing Strategy</span>
+          <span class="tag green">Usability Testing</span>
+          <span class="tag">Van Westendorp</span>
+        </div>
+        <div class="proj-stats">
+          <div class="pstat"><div class="psn">91%</div><div class="psl">Daily adoption intent</div></div>
+          <div class="pstat"><div class="psn">74%</div><div class="psl">Premium conversion</div></div>
+          <div class="pstat"><div class="psn">8+</div><div class="psl">UX improvements</div></div>
+        </div>
+        <a href="sugarwise_portfolio_v2.html" class="proj-link">View case study ↗</a>
+      </div>
+      <div class="proj-visual">
+      <img src="images/Sugarwise-nb.png" alt="SugarWise project screenshot"
+       style="width:100%; height:100%; object-fit:contain; border-radius:12px;">
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="proj-card p2 rv">
+      <div class="proj-info">
+        <div class="proj-label">HealthTech App · Ongoing</div>
+        <div class="proj-title">SOMA Health AI: validating needs, design and pricing strategy</div>
+        <div class="proj-sub">How I used generative research to pivot away from a high-risk feature before a single line of code was written</div>
+        <div class="proj-tags">
+          <span class="tag teal">Generative Research</span>
+          <span class="tag acc">Pricing Strategy</span>
+          <span class="tag green">Usability Testing</span>
+        </div>
+        <div class="proj-stats">
+          <div class="pstat"><div class="psn">12+</div><div class="psl">Clinician interviews</div></div>
+          <div class="pstat"><div class="psn">£20k</div><div class="psl">Engineering waste prevented</div></div>
+        </div>
+        <a href="https://github.com/MariaElenaLasiu/Career-Navigator-Product-Strategy" target="_blank" class="proj-link">View on GitHub ↗</a>
+      </div>
+      <div class="proj-visual">
+        <img src="images/SOMA Health_nb.png" alt="SOMA Health AI project"
+       style="width:100%; height:auto; object-fit:contain; border-radius:12px; display:block;">
+      </div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="proj-card rv" style="background:var(--s1);">
+      <div class="proj-info">
+        <div class="proj-label">E-Commerce Analytics · Data Project</div>
+        <div class="proj-title">Interactive revenue &amp; sales performance dashboard</div>
+        <div class="proj-sub">Designed a Power BI dashboard for e-commerce revenue, profit, and product performance with advanced ETL and DAX calculations</div>
+        <div class="proj-tags">
+          <span class="tag amber">Power BI</span>
+          <span class="tag">DAX</span>
+          <span class="tag">ETL</span>
+          <span class="tag">Data Analytics</span>
+        </div>
+        <a href="https://github.com/MariaElenaLasiu/E-Commerce-Sales-Analytics" target="_blank" class="proj-link">View on GitHub ↗</a>
+      </div>
+      <div class="proj-visual">
+        <video 
+        src="images/E-Commerce Sales Dashboard_short video.mp4"
+        autoplay
+       loop
+        muted
+        playsinline
+       style="width:100%; height:auto; border-radius:12px; display:block;">
+      </video>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="div"/>
+
+<!-- ══════════════════════ SKILLS ══════════════════════ -->
+<section id="skills">
+<div class="container">
+  <div class="rv"><div class="sec-label">Toolkit</div>
+  <h2>Skills &amp; tools</h2></div>
+
+  <div class="skills-wrap">
+    <div class="skill-group rv">
+      <div class="sg-title">UX &amp; Research</div>
+      <ul class="skill-list">
+        <li>Mixed methods (qual + quant)</li>
+        <li>Moderated usability testing</li>
+        <li>In-depth interviews</li>
+        <li>Van Westendorp PSM</li>
+        <li>Survey design &amp; scripting</li>
+        <li>User journey mapping</li>
+        <li>Jobs-to-be-Done (JTBD)</li>
+        <li>Prototype testing (Figma)</li>
+      </ul>
+    </div>
+    <div class="skill-group rv d1">
+      <div class="sg-title">Data &amp; Analytics</div>
+      <ul class="skill-list">
+        <li>R — statistical analysis</li>
+        <li>Python — pandas, matplotlib</li>
+        <li>Power BI — DAX, dashboards</li>
+        <li>SQL (intermediate)</li>
+        <li>Q — survey platform</li>
+        <li>A/B testing &amp; cohort analysis</li>
+        <li>Excel — pivot tables, formulas</li>
+        <li>GPT Sheets — AI-assisted coding</li>
+      </ul>
+    </div>
+    <div class="skill-group rv d2">
+      <div class="sg-title">Product &amp; Strategy</div>
+      <ul class="skill-list">
+        <li>Roadmap prioritisation</li>
+        <li>KPI definition</li>
+        <li>Market segmentation</li>
+        <li>Pricing strategy</li>
+        <li>Stakeholder management</li>
+        <li>Agile methodology</li>
+        <li>User story writing</li>
+        <li>Funnel optimisation</li>
+      </ul>
+    </div>
+    <div class="skill-group rv d3">
+      <div class="sg-title">Languages</div>
+      <ul class="skill-list">
+        <li>Italian — Native</li>
+        <li>English — Proficient</li>
+        <li>French — Upper Intermediate</li>
+      </ul>
+      <div class="sg-title" style="margin-top:1.5rem;">Soft skills</div>
+      <ul class="skill-list">
+        <li>Data storytelling</li>
+        <li>Client communication</li>
+        <li>Critical thinking</li>
+        <li>Solution-oriented</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="div"/>
+
+<!-- ══════════════════════ EDUCATION ══════════════════════ -->
+<section id="education">
+<div class="container">
+  <div class="rv"><div class="sec-label">Academic background</div>
+  <h2>Education</h2></div>
+
+  <div class="edu-list">
+    <div class="edu-item rv">
+      <div>
+        <div class="edu-school">The London School of Economics and Political Science (LSE)</div>
+        <div class="edu-degree">MSc in International &amp; European Public Policy</div>
+        <div class="edu-detail">Specialisation: International and European Political Economy · Sep 2020 – Sep 2021</div>
+      </div>
+      <div class="edu-right">
+        <div class="edu-grade">69</div>
+        <div class="edu-grade-label">Merit</div>
+      </div>
+    </div>
+    <div class="edu-item rv">
+      <div>
+        <div class="edu-school">Bocconi University · Double Degree Programme</div>
+        <div class="edu-degree">MSc in Politics &amp; Policy Analysis</div>
+        <div class="edu-detail">Econometrics for Policy Analysis, Public Economics, Political Science · Sep 2019 – Apr 2022</div>
+      </div>
+      <div class="edu-right">
+        <div class="edu-grade">110/110</div>
+        <div class="edu-grade-label">Cum Laude</div>
+      </div>
+    </div>
+    <div class="edu-item rv">
+      <div>
+        <div class="edu-school">Bocconi University</div>
+        <div class="edu-degree">BSc in International Politics &amp; Government</div>
+        <div class="edu-detail">Econometrics &amp; Statistics, Macroeconomics · Sep 2016 – Aug 2019</div>
+      </div>
+      <div class="edu-right">
+        <div class="edu-grade">110/110</div>
+        <div class="edu-grade-label">Full marks</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="div"/>
+
+<!-- ══════════════════════ TESTIMONIALS ══════════════════════ -->
+<!-- <section id="testimonials">
+<div class="container">
+  <div class="rv"><div class="sec-label">Social proof</div>
+  <h2>What collaborators say</h2></div>
+
+  <div class="testi-grid">
+    <div class="testi-card rv">
+      <div class="testi-tag">/ Design &amp; Usability</div>
+      <p class="testi-quote">It's clear that a lot of thought went into showcasing your skills and creativity. The research process was presented with exceptional clarity.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">LA</div>
+        <div><div class="testi-name">Leonardo F. Ashton</div><div class="testi-role">CTO · Andres W. Huxley</div></div>
+      </div>
+    </div>
+    <div class="testi-card rv d1">
+      <div class="testi-tag">/ Research Quality</div>
+      <p class="testi-quote">Maria Elena brought both rigour and genuine empathy to the research. Her ability to translate findings into actionable product decisions was invaluable.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">DR</div>
+        <div><div class="testi-name">Diego H. Redmond</div><div class="testi-role">UI/UX Designer</div></div>
+      </div>
+    </div>
+    <div class="testi-card rv d2">
+      <div class="testi-tag">/ Strategic Thinking</div>
+      <p class="testi-quote">She doesn't just deliver insights — she delivers decisions. The pricing analysis alone saved us weeks of guesswork and gave us investor-ready evidence.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">SF</div>
+        <div><div class="testi-name">Stefania F.</div><div class="testi-role">Founder · SugarWise</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<hr class="div"/> -->
+
+
+<!-- ══════════════════════ CONTACT ══════════════════════ -->
+<section id="contact">
+<div class="container">
+  <div class="rv"><div class="sec-label">Let's talk!</div>
+  <h2>Let's create something remarkable together</h2></div>
+
+  <div class="contact-grid">
+    <div class="contact-left rv">
+      <p class="contact-lead">Have a product that needs user validation? Building something new and want to de-risk it before development? Looking for a researcher who can go from empathy to evidence to strategy?</p>
+      <p style="margin-bottom:1.5rem;">I will get back to you within 48 hours.</p>
+      <div class="contact-links">
+        <a href="mailto:mariaelenalasiu.insights@gmail.com" class="c-link">
+          <div class="c-link-icon">✉️</div>
+          <span>mariaelenalasiu.insights@gmail.com</span>
+        </a>
+        <a href="tel:+393286798960" class="c-link">
+          <div class="c-link-icon">📞</div>
+          <span>+(39) 328 67 989 60</span>
+        </a>
+        <a href="https://www.linkedin.com/in/maria-elena-lasiu/" target="_blank" class="c-link">
+          <div class="c-link-icon">💼</div>
+          <span>linkedin.com/in/maria-elena-lasiu</span>
+        </a>
+        <a href="https://github.com/MariaElenaLasiu/Portfolio" target="_blank" class="c-link">
+          <div class="c-link-icon">⌨️</div>
+          <span>github.com/MariaElenaLasiu</span>
+        </a>
+      </div>
+    </div>
+
+    <form class="contact-form rv d1" action="https://formspree.io/f/xyknyzvj" method="POST">
+      <div class="form-group">
+         <label>Name</label>
+         <input type="text" name="name" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="youremail.com" required>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea name="message" placeholder="Tell me about your project..." required></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send message →</button>
+      </form>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════ FOOTER ══════════════════════ -->
+<footer>
+  <div class="footer-brand">© 2025 Maria Elena Lasiu · UX Researcher &amp; Product Analyst · London, UK</div>
+  <div class="footer-links">
+    <a href="https://www.linkedin.com/in/maria-elena-lasiu/" target="_blank">LinkedIn</a>
+    <a href="https://github.com/MariaElenaLasiu/Portfolio" target="_blank">GitHub</a>
+    <a href="mailto:mariaelenalasiu.insights@gmail.com">Email</a>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const p=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  document.getElementById('pb').style.width=p+'%';
+});
+const rvEls=document.querySelectorAll('.rv');
+const io=new IntersectionObserver(e=>{
+  e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('vi');});
+},{threshold:.1});
+rvEls.forEach(r=>io.observe(r));
+</script>
+</body>
+</html>
