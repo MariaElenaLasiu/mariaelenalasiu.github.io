@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SOMA Health — UX Research Case Study | Maria Elena Lasiu</title>
+<meta name="description" content="How I killed a failing product hypothesis and designed a validated research programme for a caregiver document management app. By Maria Elena Lasiu, UX Researcher." />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --bg:#080808;--s1:#111;--s2:#1a1a1a;--s3:#222;
+  --border:#2c2c2c;--border2:rgba(255,255,255,0.06);
+  --acc:#7c6af7;--acc2:#a78bfa;--teal:#2dd4bf;--green:#4ade80;--amber:#fbbf24;--rose:#f87171;
+  --glow:rgba(124,106,247,0.18);
+  --text:#f0f0f0;--muted:#888;--dim:#555;
+  --r:14px;--r2:22px;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7;overflow-x:hidden;}
+#pb{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--acc),var(--teal));width:0;z-index:1000;transition:width .1s linear;box-shadow:0 0 12px var(--acc);}
+nav{position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(8,8,8,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
+.nav-brand{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;}
+.nav-brand b{color:var(--acc2);}
+.nav-links{display:flex;gap:1.5rem;list-style:none;}
+.nav-links a{font-size:.78rem;color:var(--muted);text-decoration:none;transition:color .25s;}
+.nav-links a:hover{color:var(--acc2);}
+.toc{position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:.6rem;z-index:800;}
+@media(max-width:1100px){.toc{display:none;}}
+.td{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:background .25s,transform .25s;position:relative;}
+.td.active,.td:hover{background:var(--acc2);transform:scale(1.5);}
+.td::after{content:attr(data-l);position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:.68rem;color:var(--muted);white-space:nowrap;opacity:0;transition:opacity .2s;background:var(--s1);padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border);}
+.td:hover::after{opacity:1;}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:9rem 2rem 5rem;max-width:920px;margin:0 auto;}
+.chip{display:inline-flex;align-items:center;gap:.5rem;background:var(--glow);border:1px solid rgba(124,106,247,.3);border-radius:100px;padding:.3rem 1rem;font-size:.72rem;color:var(--acc2);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2rem;width:fit-content;}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acc2);flex-shrink:0;}
+h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:900;line-height:1.05;letter-spacing:-.035em;margin-bottom:1.5rem;}
+.grad{background:linear-gradient(135deg,var(--acc2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:620px;margin-bottom:2.5rem;line-height:1.85;}
+.meta-bar{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:2.5rem;}
+.meta-cell{padding:.85rem 1.5rem;flex:1;min-width:140px;}
+.meta-cell+.meta-cell{border-left:1px solid var(--border);}
+.meta-cell .ml{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:.25rem;}
+.meta-cell .mv{font-size:.9rem;font-weight:600;color:var(--text);}
+.bubbles{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;}
+.bubble{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.2rem 1.8rem;min-width:130px;}
+.bubble .bn{font-size:2.2rem;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--acc2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.bubble .bl{font-size:.72rem;color:var(--muted);margin-top:.3rem;}
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;}
+.tag{background:var(--s2);border:1px solid var(--border);border-radius:100px;padding:.22rem .7rem;font-size:.72rem;color:var(--muted);}
+section{max-width:920px;margin:0 auto;padding:5rem 2rem;}
+.divider{border:none;border-top:1px solid var(--border);max-width:920px;margin:0 auto;}
+.sec-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--acc2);margin-bottom:.5rem;}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.025em;margin-bottom:1rem;}
+h3{font-size:1rem;font-weight:700;margin-bottom:.4rem;color:var(--text);}
+p{color:var(--muted);line-height:1.8;margin-bottom:.9rem;}
+p:last-child{margin-bottom:0;}
+.narrative{display:flex;flex-direction:column;gap:0;}
+.n-step{display:grid;grid-template-columns:200px 1fr;gap:0;position:relative;}
+.n-step+.n-step .n-left{padding-top:0;}
+.n-left{padding:2rem 2.5rem 2rem 0;border-right:1px solid var(--border);position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;}
+.n-left .step-num{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
+.n-left .step-type{font-size:.78rem;font-weight:700;padding:.25rem .75rem;border-radius:100px;white-space:nowrap;}
+.step-type.problem{background:rgba(248,113,113,.1);color:var(--rose);}
+.step-type.decision{background:rgba(124,106,247,.12);color:var(--acc2);}
+.step-type.action{background:rgba(45,212,191,.1);color:var(--teal);}
+.step-type.impact{background:rgba(74,222,128,.1);color:var(--green);}
+.n-dot{position:absolute;right:-6px;top:2rem;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg);z-index:1;}
+.n-dot.problem{background:var(--rose);}
+.n-dot.decision{background:var(--acc2);}
+.n-dot.action{background:var(--teal);}
+.n-dot.impact{background:var(--green);}
+.n-right{padding:2rem 0 2rem 2.5rem;}
+.n-right h3{margin-bottom:.6rem;}
+.n-right .quote{font-style:italic;font-size:.85rem;color:var(--dim);border-left:2px solid var(--acc);padding-left:.75rem;margin-top:.75rem;}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1.5rem;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.5rem;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;transition:border-color .25s,transform .25s;}
+.card:hover{border-color:rgba(124,106,247,.45);transform:translateY(-2px);}
+.card-icon{width:38px;height:38px;border-radius:var(--r);background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:1rem;}
+.card.teal{border-left:3px solid var(--teal);}
+.card.green{border-left:3px solid var(--green);}
+.card.amber{border-left:3px solid var(--amber);}
+.card.rose{border-left:3px solid var(--rose);}
+.card.purple{border-left:3px solid var(--acc2);}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-top:1.5rem;}
+.stat{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;text-align:center;}
+.stat .sn{font-size:2.4rem;font-weight:900;line-height:1;margin-bottom:.25rem;}
+.stat .sl{font-size:.75rem;color:var(--muted);}
+.sn.g{color:var(--green);}
+.sn.t{color:var(--teal);}
+.sn.a{color:var(--amber);}
+.sn.p{color:var(--acc2);}
+.sn.r{color:var(--rose);}
+.bars{margin-top:1.5rem;display:flex;flex-direction:column;gap:.9rem;}
+.bar-row{display:flex;align-items:center;gap:1rem;}
+.bar-label{font-size:.8rem;color:var(--muted);min-width:230px;}
+.bar-track{flex:1;height:7px;background:var(--s3);border-radius:100px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--acc),var(--teal));width:0;transition:width 1.3s var(--ease);}
+.bar-pct{font-size:.8rem;font-weight:700;color:var(--acc2);min-width:34px;}
+/* Phase timeline */
+.phase-timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:2rem;border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;}
+.phase-col{padding:1.5rem;position:relative;}
+.phase-col+.phase-col{border-left:1px solid var(--border);}
+.phase-num{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:.4rem;}
+.phase-title{font-size:.9rem;font-weight:800;color:var(--text);margin-bottom:.75rem;}
+.phase-badge{display:inline-block;font-size:.65rem;font-weight:700;padding:.2rem .6rem;border-radius:100px;margin-bottom:.75rem;}
+.phase-badge.q{background:rgba(248,113,113,.1);color:var(--rose);}
+.phase-badge.n{background:rgba(251,191,36,.1);color:var(--amber);}
+.phase-badge.v{background:rgba(74,222,128,.1);color:var(--green);}
+.phase-meta{font-size:.75rem;color:var(--dim);margin-bottom:.5rem;}
+.phase-list{list-style:none;font-size:.78rem;color:var(--muted);}
+.phase-list li{padding:.25rem 0;border-bottom:1px solid var(--border);}
+.phase-list li:last-child{border-bottom:none;}
+.phase-list li::before{content:"→ ";color:var(--acc2);}
+@media(max-width:700px){.phase-timeline{grid-template-columns:1fr;}.phase-col+.phase-col{border-left:none;border-top:1px solid var(--border);}}
+/* Hypothesis cards */
+.hyp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1.5rem;}
+.hyp-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem;}
+.hyp-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--acc2);margin-bottom:.3rem;}
+.hyp-h{font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:.4rem;}
+.hyp-body{font-size:.78rem;color:var(--muted);line-height:1.7;}
+/* Hbox */
+.hbox{border-radius:var(--r2);padding:1.75rem;margin-top:1.5rem;}
+.hbox.purple{background:linear-gradient(135deg,rgba(124,106,247,.09),rgba(45,212,191,.05));border:1px solid rgba(124,106,247,.25);}
+.hbox.teal{background:linear-gradient(135deg,rgba(45,212,191,.07),rgba(124,106,247,.04));border:1px solid rgba(45,212,191,.25);}
+.hbox.amber{background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(124,106,247,.04));border:1px solid rgba(251,191,36,.22);}
+.hbox.rose{background:linear-gradient(135deg,rgba(248,113,113,.07),rgba(124,106,247,.04));border:1px solid rgba(248,113,113,.22);}
+.hbox.green{background:linear-gradient(135deg,rgba(74,222,128,.07),rgba(45,212,191,.04));border:1px solid rgba(74,222,128,.22);}
+.hbox h3{margin-bottom:.5rem;}
+/* Decision table */
+.dt{width:100%;border-collapse:collapse;margin-top:1.5rem;font-size:.82rem;}
+.dt th{text-align:left;padding:.7rem 1rem;background:var(--s2);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);}
+.dt td{padding:.8rem 1rem;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;}
+.dt tr:hover td{background:var(--s1);}
+.pill{display:inline-block;padding:.12rem .5rem;border-radius:100px;font-size:.68rem;font-weight:700;}
+.pill.g{background:rgba(74,222,128,.1);color:var(--green);}
+.pill.a{background:rgba(251,191,36,.1);color:var(--amber);}
+.pill.p{background:rgba(124,106,247,.1);color:var(--acc2);}
+.pill.r{background:rgba(248,113,113,.1);color:var(--rose);}
+/* Interview guide */
+.guide-section{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-top:1rem;}
+.guide-header{padding:.9rem 1.2rem;background:var(--s2);display:flex;justify-content:space-between;align-items:center;cursor:pointer;border:none;width:100%;text-align:left;}
+.guide-header h3{margin:0;font-size:.88rem;}
+.guide-duration{font-size:.7rem;color:var(--acc2);font-weight:700;}
+.guide-body{padding:1.2rem;display:none;}
+.guide-body.open{display:block;}
+.guide-q{font-size:.82rem;color:var(--muted);padding:.4rem 0;border-bottom:1px solid var(--border);display:flex;gap:.5rem;}
+.guide-q:last-child{border-bottom:none;}
+.guide-q::before{content:"Q";color:var(--acc2);font-weight:700;font-size:.68rem;flex-shrink:0;padding-top:.2rem;}
+.guide-note{font-size:.72rem;color:var(--dim);font-style:italic;background:var(--s2);border-radius:var(--r);padding:.5rem .75rem;margin-bottom:.75rem;}
+/* Skills */
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1.5rem;}
+@media(max-width:600px){.skills-grid{grid-template-columns:1fr;}}
+.skill-list{list-style:none;}
+.skill-list li{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);padding:.38rem 0;border-bottom:1px solid var(--border);}
+.skill-list li::before{content:"→";color:var(--acc2);font-size:.68rem;flex-shrink:0;}
+.cta{text-align:center;padding:5rem 2rem;max-width:600px;margin:0 auto;}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:100px;font-size:.88rem;font-weight:600;text-decoration:none;transition:transform .25s,box-shadow .25s;}
+.btn-p{background:linear-gradient(135deg,var(--acc),#6366f1);color:#fff;box-shadow:0 4px 20px rgba(124,106,247,.3);}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,106,247,.45);}
+.btn-s{background:var(--s1);border:1px solid var(--border);color:var(--muted);}
+.btn-s:hover{border-color:var(--acc2);color:var(--acc2);transform:translateY(-2px);}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;}
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-size:.72rem;color:var(--dim);}
+.rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.rv.vi{opacity:1;transform:none;}
+.rv.d1{transition-delay:.1s;}
+.rv.d2{transition-delay:.2s;}
+.rv.d3{transition-delay:.3s;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--acc);}
+@media(max-width:700px){
+  .n-step{grid-template-columns:1fr;}
+  .n-left{border-right:none;border-bottom:1px solid var(--border);flex-direction:row;align-items:center;padding:1rem 0;}
+  .n-dot{display:none;}
+  .n-right{padding:1rem 0;}
+  .meta-cell+.meta-cell{border-left:none;border-top:1px solid var(--border);}
+  .meta-bar{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<div id="pb"></div>
+
+<nav>
+  <a href="#top" class="nav-brand">Maria Elena Lasiu <b>/ SOMA Health</b></a>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<div class="toc">
+  <div class="td active" data-section="top" data-l="Top"></div>
+  <div class="td" data-section="problem" data-l="Problem"></div>
+  <div class="td" data-section="pivot" data-l="Pivot"></div>
+  <div class="td" data-section="process" data-l="Process"></div>
+  <div class="td" data-section="solution" data-l="Solution"></div>
+  <div class="td" data-section="impact" data-l="Impact"></div>
+  <div class="td" data-section="about" data-l="About"></div>
+</div>
+
+<!-- HERO -->
+<div id="top">
+<div class="hero">
+  <div class="chip rv">UX Research Case Study · Ongoing · 2025–2026</div>
+  <h1 class="rv">When the first idea<br/>was <span class="grad">wrong</span></h1>
+  <p class="hero-sub rv">How I killed a technically over-scoped product hypothesis, navigated regulatory dead ends, and redesigned SOMA Health as a caregiver document management app — then built the research programme to validate it from scratch.</p>
+
+  <div class="meta-bar rv">
+    <div class="meta-cell"><div class="ml">Role</div><div class="mv">Lead UX Researcher & Co-founder</div></div>
+    <div class="meta-cell"><div class="ml">Timeline</div><div class="mv">Nov 2025 — ongoing</div></div>
+    <div class="meta-cell"><div class="ml">Methods</div><div class="mv">Interviews · Survey · Van Westendorp · Usability</div></div>
+    <div class="meta-cell"><div class="ml">Phases</div><div class="mv">3-phase lean programme</div></div>
+  </div>
+
+  <div class="bubbles rv">
+    <div class="bubble"><div class="bn">8M</div><div class="bl">Caregiver TAM in Italy</div></div>
+    <div class="bubble"><div class="bn">H5</div><div class="bl">Hypotheses to validate</div></div>
+    <div class="bubble"><div class="bn">3</div><div class="bl">Research phases designed</div></div>
+    <div class="bubble"><div class="bn">60%</div><div class="bl">Target: docs retrieval failure rate</div></div>
+  </div>
+
+  <div class="tags rv">
+    <span class="tag">Generative Research</span>
+    <span class="tag">Semi-structured Interviews</span>
+    <span class="tag">Van Westendorp PSM</span>
+    <span class="tag">Concept Testing</span>
+    <span class="tag">Usability Testing</span>
+    <span class="tag">Lean Research Design</span>
+    <span class="tag">HealthTech</span>
+    <span class="tag">Caregiver UX</span>
+  </div>
+</div>
+</div>
+
+<hr class="divider"/>
+
+<!-- PROBLEM -->
+<section id="problem">
+<div class="rv">
+  <div class="sec-label">01 — Problem</div>
+  <h2>The wrong product — and the research that killed it</h2>
+  <p style="max-width:680px;">SOMA Health started as a physician-facing organ-centric data visualization tool for Italian hospitals. After consulting with a healthcare data specialist and a privacy lawyer, the verdict was clear: regulatory barriers (GDPR, FSE integration, hospital procurement cycles) made that version unfeasible without institutional partnerships we couldn't yet secure. Rather than push forward blindly, I used research to redirect.</p>
+</div>
+
+<div class="hbox rose rv">
+  <h3>❌ What we killed — and why</h3>
+  <p>The physician dashboard required hospital-level data access, which triggers GDPR Article 9 (sensitive health data), Italian privacy law, and a procurement timeline of 12–24 months. Research conversations with a privacy lawyer and a healthcare integration specialist confirmed these weren't solvable constraints at early-stage. The honest call was to pivot before spending development budget.</p>
+</div>
+
+<div class="hbox purple rv">
+  <h3>🔄 The insight that reframed everything</h3>
+  <p style="font-size:1.05rem;font-weight:700;color:var(--text);">The data chaos problem doesn't live inside hospitals — it lives in the hands of the <strong>8 million caregiver</strong> managing their elderly relatives' healthcare from WhatsApp, their camera roll, and piles of paper.</p>
+</div>
+
+<div class="grid2 rv">
+  <div class="card rose">
+    <div class="card-icon">📱</div>
+    <h3>The scattered documents problem</h3>
+    <p>Medical reports scattered across WhatsApp threads, email chains, camera rolls, and physical paper — impossible to find in an emergency, impossible to share coherently with a new specialist.</p>
+  </div>
+  <div class="card rose">
+    <div class="card-icon">👩‍💼</div>
+    <h3>8M caregivers, mostly invisible</h3>
+    <p>~8 million Italians — predominantly women aged 45–60 who also work — manage heavy administrative healthcare loads for elderly relatives with no tools built for them.</p>
+  </div>
+  <div class="card rose">
+    <div class="card-icon">🏥</div>
+    <h3>Clinical risk, not just inconvenience</h3>
+    <p>Missing documents at a specialist visit or ER visit don't just cause stress — they cause delays, repeat exams, and clinical decisions made without full information.</p>
+  </div>
+  <div class="card rose">
+    <div class="card-icon">🔒</div>
+    <h3>Consumer-grade data, not hospital data</h3>
+    <p>The new model processes documents caregivers already own — photos of reports — sidestepping hospital-level GDPR barriers entirely. Feasible from day one.</p>
+  </div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- PIVOT + PRODUCT -->
+<section id="pivot">
+<div class="rv">
+  <div class="sec-label">02 — The Product Concept</div>
+  <h2>SOMA Health: photo → organised → shared in 30 seconds</h2>
+  <p style="max-width:680px;">The app enables caregivers to photograph medical documents after each appointment. AI automatically organises them by specialisation. Documents are shared securely with doctors via a time-limited unique code. No hospital integration required. No GDPR Article 9 exposure. Built around a behaviour caregivers already have — taking photos — not one they need to learn.</p>
+</div>
+
+<div class="stat-row rv">
+  <div class="stat"><div class="sn p">📷</div><div class="sl">Photo after each visit</div></div>
+  <div class="stat"><div class="sn t">🤖</div><div class="sl">AI organises by specialisation</div></div>
+  <div class="stat"><div class="sn g">🔗</div><div class="sl">Share via unique temp code</div></div>
+  <div class="stat"><div class="sn a">8M</div><div class="sl">Addressable caregivers in Italy</div></div>
+</div>
+
+<div class="hbox amber rv">
+  <h3>⚠️ But this is still a hypothesis</h3>
+  <p>We believe this solves a real, high-priority problem for Italian caregivers. We do not yet have evidence that it does. That is exactly what the research programme is designed to establish — before a line of production code is written.</p>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- PROCESS -->
+<section id="process">
+<div class="rv">
+  <div class="sec-label">03 — Research Process</div>
+  <h2>A 3-phase lean programme to de-risk the concept</h2>
+  <p style="max-width:680px;">Each phase has a precise question to answer, a deliberate method choice, and go/no-go criteria that determine whether we proceed. Nothing is exploratory for the sake of it.</p>
+</div>
+
+<!-- Hypotheses -->
+<div class="rv" style="margin-top:2rem;">
+  <h3 style="margin-bottom:.3rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--acc2);">The 5 hypotheses this programme will prove or kill</h3>
+  <div class="hyp-grid">
+    <div class="hyp-card rv">
+      <div class="hyp-label">H1 · Fragmentation</div>
+      <div class="hyp-h">Documents are managed chaotically</div>
+      <div class="hyp-body">Most caregivers use WhatsApp, camera roll, and email — no centralised system.</div>
+    </div>
+    <div class="hyp-card rv d1">
+      <div class="hyp-label">H2 · Frequency</div>
+      <div class="hyp-h">≥60% fail to find a document when needed</div>
+      <div class="hyp-body">At least 60% have experienced retrieval failure in the past year (visit, ER, new specialist).</div>
+    </div>
+    <div class="hyp-card rv d2">
+      <div class="hyp-label">H3 · Time cost</div>
+      <div class="hyp-h">≥1–2 hours/month on admin</div>
+      <div class="hyp-body">Caregivers spend significant monthly time on healthcare administration for their relative.</div>
+    </div>
+    <div class="hyp-card rv">
+      <div class="hyp-label">H4 · Clinical impact</div>
+      <div class="hyp-h">≥20% report real-world consequences</div>
+      <div class="hyp-body">Delays, duplicate exams, or clinical risk caused by missing documents at the point of care.</div>
+    </div>
+    <div class="hyp-card rv d1">
+      <div class="hyp-label">H5 · Solution fit</div>
+      <div class="hyp-h">"Photo after visit" feels like relief, not burden</div>
+      <div class="hyp-body">The concept is perceived as a natural improvement on current behaviour — not another tool to manage.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Phase timeline -->
+<div class="phase-timeline rv">
+  <div class="phase-col">
+    <div class="phase-num">Phase 1</div>
+    <div class="phase-title">Explorative</div>
+    <div class="phase-badge q">Qualitative</div>
+    <div class="phase-meta">3–4 weeks · 10–15 caregivers</div>
+    <ul class="phase-list">
+      <li>Semi-structured in-depth interviews</li>
+      <li>Contextual screen-share (optional)</li>
+      <li>Workflow journey mapping</li>
+      <li>Pain point pattern analysis</li>
+    </ul>
+  </div>
+  <div class="phase-col">
+    <div class="phase-num">Phase 2</div>
+    <div class="phase-title">Quantitative validation</div>
+    <div class="phase-badge n">Survey</div>
+    <div class="phase-meta">2–3 weeks · 80–150 responses</div>
+    <ul class="phase-list">
+      <li>Structured online survey</li>
+      <li>Frequency &amp; severity quantification</li>
+      <li>Van Westendorp pricing analysis</li>
+      <li>Investor deck &amp; grant data</li>
+    </ul>
+  </div>
+  <div class="phase-col">
+    <div class="phase-num">Phase 3</div>
+    <div class="phase-title">Solution evaluation</div>
+    <div class="phase-badge v">Evaluative</div>
+    <div class="phase-meta">3–4 weeks · 5–8 caregivers</div>
+    <ul class="phase-list">
+      <li>Concept testing &amp; comprehension</li>
+      <li>Low/mid-fi usability testing</li>
+      <li>Desirability &amp; routine fit</li>
+      <li>Prototype iteration based on findings</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Narrative: Phase 1 decisions -->
+<div class="narrative" style="margin-top:2.5rem;">
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 1</div>
+      <span class="step-type decision">Decision</span>
+      <div class="n-dot decision"></div>
+    </div>
+    <div class="n-right">
+      <h3>Why interviews before the prototype — and why "show me" over "tell me"</h3>
+      <p>Showing the concept first anchors users on our solution rather than their actual behaviour. I structured Phase 1 to explore <em>current reality</em> for 40 minutes before any concept mention. The most powerful technique: asking caregivers to show their current document system — WhatsApp chaos, blurry photo folders, cardboard folders — which generates richer data than any self-report question.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 1</div>
+      <span class="step-type action">Action</span>
+      <div class="n-dot action"></div>
+    </div>
+    <div class="n-right">
+      <h3>Interview structure designed around 4 moments</h3>
+      <p>Warm-up → Current behaviour → Pain points → Indirect concept validation. The indirect validation block uses imagination ("if such a tool existed...") rather than evaluation — critical at Phase 1, where we want to understand mental models before testing a specific design.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 2</div>
+      <span class="step-type decision">Decision</span>
+      <div class="n-dot decision"></div>
+    </div>
+    <div class="n-right">
+      <h3>Van Westendorp over direct pricing — again</h3>
+      <p>Same reasoning as SugarWise: direct price questions anchor respondents and are especially unreliable when users default to expecting free tools. PSM extracts four psychological thresholds — too cheap, acceptable, expensive, too expensive — without anchoring bias. Particularly important with caregivers, who may resist monetising healthcare tasks for loved ones.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Phase 3</div>
+      <span class="step-type action">Action</span>
+      <div class="n-dot action"></div>
+    </div>
+    <div class="n-right">
+      <h3>Concept test before prototype — comprehension before usability</h3>
+      <p>H5 is about fit in routine, not task completion. I'll test whether caregivers understand and desire the concept <em>before</em> testing whether they can operate a prototype — separating desirability questions from usability questions, which are often conflated in early-stage testing.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Interview guide accordion -->
+<div class="rv" style="margin-top:2.5rem;">
+  <h3 style="margin-bottom:.75rem;">Phase 1 interview guide</h3>
+
+  <div class="guide-section">
+    <div class="guide-header" onclick="toggleGuide(this)">
+      <h3>🔥 Warm-up <span style="font-weight:400;color:var(--dim);font-size:.85rem;">— Contextualise, don't collect</span></h3>
+      <span class="guide-duration">5 min</span>
+    </div>
+    <div class="guide-body">
+      <div class="guide-note">Goal: establish rapport and understand the caregiving context before touching any specific topic.</div>
+      <div class="guide-q">Raccontami di te: chi hai in cura, da quanto tempo, come è organizzata la tua settimana rispetto a questa responsabilità.</div>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" onclick="toggleGuide(this)">
+      <h3>📋 Current behaviour <span style="font-weight:400;color:var(--dim);font-size:.85rem;">— The "show me" moment</span></h3>
+      <span class="guide-duration">15 min</span>
+    </div>
+    <div class="guide-body">
+      <div class="guide-note">⚡ "Mostrami" is the most powerful question in the UX toolkit. People show you the WhatsApp chaos, blurry photo folders, cardboard folders — more revealing than any self-report.</div>
+      <div class="guide-q">Descrivimi l'ultima volta che hai accompagnato [persona] da un medico. Cosa hai fatto prima, durante e dopo?</div>
+      <div class="guide-q">Dove tieni i documenti medici di [persona] in questo momento? Mostrami se puoi.</div>
+      <div class="guide-q">Raccontami un momento in cui hai avuto bisogno di un documento e non riuscivi a trovarlo.</div>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" onclick="toggleGuide(this)">
+      <h3>😤 Pain points <span style="font-weight:400;color:var(--dim);font-size:.85rem;">— Severity &amp; impact</span></h3>
+      <span class="guide-duration">15 min</span>
+    </div>
+    <div class="guide-body">
+      <div class="guide-note">Goal: understand severity, emotional weight, and real-world consequences — not just inconvenience.</div>
+      <div class="guide-q">Qual è la cosa più frustrante nella gestione della salute di [persona]?</div>
+      <div class="guide-q">C'è mai stato un momento in cui non avere le informazioni giuste in tempo ha causato un problema reale?</div>
+      <div class="guide-q">Se potessi cambiare una sola cosa in questo processo, quale sarebbe?</div>
+    </div>
+  </div>
+
+  <div class="guide-section">
+    <div class="guide-header" onclick="toggleGuide(this)">
+      <h3>💡 Indirect concept validation <span style="font-weight:400;color:var(--dim);font-size:.85rem;">— Imagine, don't evaluate</span></h3>
+      <span class="guide-duration">10 min</span>
+    </div>
+    <div class="guide-body">
+      <div class="guide-note">Do not show the app. Use imagination to surface mental models and workarounds without anchoring on our specific design.</div>
+      <div class="guide-q">Se esistesse uno strumento che ti permettesse di avere tutto in un posto e condividerlo in 30 secondi col medico, dove si inserirebbe nella tua routine?</div>
+      <div class="guide-q">In che modo potrebbe facilitare la condivisione delle informazioni con altri membri della famiglia?</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Recruitment criteria -->
+<div class="hbox teal rv">
+  <h3>👥 Recruitment criteria &amp; channels</h3>
+  <p><strong>Channels:</strong> Facebook groups and online communities for caregivers of elderly people; personal networks and referrals.<br/>
+  <strong>Inclusion:</strong> Manages healthcare of an elderly relative ≥1x/month (bookings, visits, exams, documents) · Aged 40–65.<br/>
+  <strong>Exclusion:</strong> Primary caregivers of people with severe disability (Legge 104 – autism, severe disability) — different needs and complexity requiring separate research.</p>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- SOLUTION (product design) -->
+<section id="solution">
+<div class="rv">
+  <div class="sec-label">04 — What We're Validating</div>
+  <h2>The solution concept under test</h2>
+  <p style="max-width:680px;">This section will be updated as Phase 1 and Phase 2 findings come in. Currently, these are the product design hypotheses that the research programme will confirm, refine, or reject.</p>
+</div>
+
+<table class="dt rv">
+  <thead><tr><th>Concept element</th><th>Hypothesis</th><th>Validated by</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>Photo-based document capture</td>
+      <td>Caregivers already take photos — this is a natural extension, not new behaviour</td>
+      <td>Phase 1 interviews</td>
+      <td><span class="pill a">To be tested</span></td>
+    </tr>
+    <tr>
+      <td>AI auto-organisation by specialisation</td>
+      <td>Manual filing is the main pain; automation is the key value driver</td>
+      <td>Phase 1 + Phase 3</td>
+      <td><span class="pill a">To be tested</span></td>
+    </tr>
+    <tr>
+      <td>Temp code doctor sharing</td>
+      <td>Secure, simple sharing is a valued feature — not privacy-concerning</td>
+      <td>Phase 3 concept test</td>
+      <td><span class="pill a">To be tested</span></td>
+    </tr>
+    <tr>
+      <td>Pricing model</td>
+      <td>Caregivers will pay for a tool that reduces admin burden for a loved one</td>
+      <td>Phase 2 Van Westendorp</td>
+      <td><span class="pill a">To be tested</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="hbox amber rv">
+  <h3>🚧 Under construction — intentionally</h3>
+  <p>This case study documents live research in progress. The findings, solution, and impact sections will be completed as phases conclude. Showing the research programme at this stage reflects the actual value of UX research in early-stage product development: it shapes the product <em>before</em> the product is built.</p>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- IMPACT -->
+<section id="impact">
+<div class="rv">
+  <div class="sec-label">05 — Impact So Far</div>
+  <h2>What research has already changed</h2>
+</div>
+
+<div class="grid2 rv">
+  <div class="card green">
+    <div class="card-icon">🔄</div>
+    <h3>Killed a non-viable product</h3>
+    <p>Regulatory and technical analysis — before any development — confirmed the physician dashboard was unfeasible at early stage. Research saved months of misdirected effort.</p>
+  </div>
+  <div class="card teal">
+    <div class="card-icon">🎯</div>
+    <h3>Identified a larger, accessible market</h3>
+    <p>8 million Italian caregivers vs. a subset of Italian hospital physicians. B2C via App Store vs. B2B via hospital procurement. Faster path to revenue, lower regulatory barrier.</p>
+  </div>
+  <div class="card purple">
+    <div class="card-icon">🧪</div>
+    <h3>Designed a defensible research programme</h3>
+    <p>5 testable hypotheses, 3 phases, go/no-go criteria. The programme is documented for Sardegna Ricerche funding requirements and investor due diligence.</p>
+  </div>
+  <div class="card amber">
+    <div class="card-icon">📄</div>
+    <h3>Ethics infrastructure in place</h3>
+    <p>Informed consent documentation completed and ready for participant recruitment. Inclusion/exclusion criteria defined to protect vulnerable populations.</p>
+  </div>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ABOUT -->
+<section id="about">
+<div class="rv">
+  <div class="sec-label">06 — About</div>
+  <h2>Co-founder + Lead UX Researcher</h2>
+  <p style="max-width:680px;">This is an ongoing research programme I designed and am leading as co-founder of SOMA Health. It demonstrates research applied not just to improve a product, but to decide whether to build it — and what to build instead when the first idea fails the evidence test.</p>
+</div>
+
+<div class="skills-grid rv">
+  <div>
+    <h3 style="margin-bottom:.75rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--acc2);">Skills demonstrated</h3>
+    <ul class="skill-list">
+      <li>Regulatory barrier identification</li>
+      <li>Product hypothesis design</li>
+      <li>Lean 3-phase research programme design</li>
+      <li>Interview guide design (Italian)</li>
+      <li>Van Westendorp pricing methodology</li>
+      <li>Ethics &amp; consent documentation</li>
+      <li>Investor-grade research framing</li>
+    </ul>
+  </div>
+  <div>
+    <h3 style="margin-bottom:.75rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--acc2);">In progress</h3>
+    <ul class="skill-list">
+      <li>Phase 1: caregiver interviews (recruiting)</li>
+      <li>Phase 2: quantitative survey design</li>
+      <li>Phase 3: low-fi prototype for concept test</li>
+      <li>Sardegna Ricerche grant documentation</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<div class="cta">
+  <div class="sec-label" style="justify-content:center;display:flex;">What's next</div>
+  <h2>Interested in HealthTech research?</h2>
+  <p>Available for UX research, caregiver-facing product validation, and early-stage de-risking engagements.</p>
+  <div class="cta-btns">
+    <a href="mailto:mariaelenalasiu@gmail.com" class="btn btn-p">Get in touch →</a>
+    <a href="index.html" class="btn btn-s">← Back to portfolio</a>
+  </div>
+</div>
+
+<footer>© 2026 Maria Elena Lasiu · UX Researcher & Product Strategist</footer>
+
+<script>
+const pb = document.getElementById('pb');
+window.addEventListener('scroll', () => {
+  pb.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
+});
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vi'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) e.target.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.p + '%'; });
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.bars').forEach(el => barObs.observe(el));
+
+const sections = ['top','problem','pivot','process','solution','impact','about'];
+const dots = document.querySelectorAll('.td');
+const secEls = sections.map(id => document.getElementById(id)).filter(Boolean);
+
+window.addEventListener('scroll', () => {
+  let current = 0;
+  secEls.forEach((s, i) => { if(s && window.scrollY >= s.offsetTop - 200) current = i; });
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+});
+
+dots.forEach((d, i) => {
+  d.addEventListener('click', () => {
+    const target = document.getElementById(sections[i]);
+    if(target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+function toggleGuide(btn) {
+  const body = btn.nextElementSibling;
+  body.classList.toggle('open');
+}
+</script>
+</body>
+</html>
