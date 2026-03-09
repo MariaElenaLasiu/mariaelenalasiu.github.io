@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Career Navigator — Product Strategy Case Study | Maria Elena Lasiu</title>
+<meta name="description" content="How I reframed Whiteshield's Career Navigator from diagnostic-first to value-first — designing a low-friction acquisition funnel to capture high-fidelity labour market data. By Maria Elena Lasiu." />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{
+  --bg:#080808;--s1:#111;--s2:#1a1a1a;--s3:#222;
+  --border:#2c2c2c;--border2:rgba(255,255,255,0.06);
+  --acc:#7c6af7;--acc2:#a78bfa;--teal:#2dd4bf;--green:#4ade80;--amber:#fbbf24;--rose:#f87171;
+  --glow:rgba(124,106,247,0.18);
+  --text:#f0f0f0;--muted:#888;--dim:#555;
+  --r:14px;--r2:22px;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7;overflow-x:hidden;}
+
+/* ── PROGRESS ── */
+#pb{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--acc),var(--teal));width:0;z-index:1000;transition:width .1s linear;box-shadow:0 0 12px var(--acc);}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(8,8,8,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
+.nav-brand{font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-decoration:none;}
+.nav-brand b{color:var(--acc2);}
+.nav-links{display:flex;gap:1.5rem;list-style:none;}
+.nav-links a{font-size:.78rem;color:var(--muted);text-decoration:none;transition:color .25s;}
+.nav-links a:hover{color:var(--acc2);}
+
+/* ── TOC DOTS ── */
+.toc{position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:.6rem;z-index:800;}
+@media(max-width:1100px){.toc{display:none;}}
+.td{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:background .25s,transform .25s;position:relative;}
+.td.active,.td:hover{background:var(--acc2);transform:scale(1.5);}
+.td::after{content:attr(data-l);position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:.68rem;color:var(--muted);white-space:nowrap;opacity:0;transition:opacity .2s;background:var(--s1);padding:.2rem .5rem;border-radius:4px;border:1px solid var(--border);}
+.td:hover::after{opacity:1;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:9rem 2rem 5rem;max-width:920px;margin:0 auto;}
+.chip{display:inline-flex;align-items:center;gap:.5rem;background:var(--glow);border:1px solid rgba(124,106,247,.3);border-radius:100px;padding:.3rem 1rem;font-size:.72rem;color:var(--acc2);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2rem;width:fit-content;}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--acc2);flex-shrink:0;}
+h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:900;line-height:1.05;letter-spacing:-.035em;margin-bottom:1.5rem;}
+.grad{background:linear-gradient(135deg,var(--acc2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:620px;margin-bottom:2.5rem;line-height:1.85;}
+
+/* hero meta bar */
+.meta-bar{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:2.5rem;}
+.meta-cell{padding:.85rem 1.5rem;flex:1;min-width:140px;}
+.meta-cell+.meta-cell{border-left:1px solid var(--border);}
+.meta-cell .ml{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:.25rem;}
+.meta-cell .mv{font-size:.9rem;font-weight:600;color:var(--text);}
+
+/* stat bubbles */
+.bubbles{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;}
+.bubble{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.2rem 1.8rem;min-width:130px;}
+.bubble .bn{font-size:2.2rem;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--acc2),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.bubble .bl{font-size:.72rem;color:var(--muted);margin-top:.3rem;}
+
+/* tags */
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;}
+.tag{background:var(--s2);border:1px solid var(--border);border-radius:100px;padding:.22rem .7rem;font-size:.72rem;color:var(--muted);}
+
+/* ── SECTION BASE ── */
+section{max-width:920px;margin:0 auto;padding:5rem 2rem;}
+.divider{border:none;border-top:1px solid var(--border);max-width:920px;margin:0 auto;}
+.sec-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--acc2);margin-bottom:.5rem;}
+h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:800;letter-spacing:-.025em;margin-bottom:1rem;}
+h3{font-size:1rem;font-weight:700;margin-bottom:.4rem;color:var(--text);}
+p{color:var(--muted);line-height:1.8;margin-bottom:.9rem;}
+p:last-child{margin-bottom:0;}
+
+/* ── AFFIRMATIVE NARRATIVE BLOCKS ── */
+.narrative{display:flex;flex-direction:column;gap:0;}
+.n-step{display:grid;grid-template-columns:200px 1fr;gap:0;position:relative;}
+.n-step+.n-step .n-left{padding-top:0;}
+.n-left{padding:2rem 2.5rem 2rem 0;border-right:1px solid var(--border);position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;}
+.n-left .step-num{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
+.n-left .step-type{font-size:.78rem;font-weight:700;padding:.25rem .75rem;border-radius:100px;white-space:nowrap;}
+.step-type.problem{background:rgba(248,113,113,.1);color:var(--rose);}
+.step-type.decision{background:rgba(124,106,247,.12);color:var(--acc2);}
+.step-type.action{background:rgba(45,212,191,.1);color:var(--teal);}
+.step-type.impact{background:rgba(74,222,128,.1);color:var(--green);}
+.n-dot{position:absolute;right:-6px;top:2rem;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg);z-index:1;}
+.n-dot.problem{background:var(--rose);}
+.n-dot.decision{background:var(--acc2);}
+.n-dot.action{background:var(--teal);}
+.n-dot.impact{background:var(--green);}
+.n-right{padding:2rem 0 2rem 2.5rem;}
+.n-right h3{margin-bottom:.6rem;}
+.n-right .quote{font-style:italic;font-size:.85rem;color:var(--dim);border-left:2px solid var(--acc);padding-left:.75rem;margin-top:.75rem;}
+
+/* ── CARD GRID ── */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1.5rem;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1.5rem;}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;transition:border-color .25s,transform .25s;}
+.card:hover{border-color:rgba(124,106,247,.45);transform:translateY(-2px);}
+.card-icon{width:38px;height:38px;border-radius:var(--r);background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:1rem;}
+.card.teal{border-left:3px solid var(--teal);}
+.card.green{border-left:3px solid var(--green);}
+.card.amber{border-left:3px solid var(--amber);}
+.card.rose{border-left:3px solid var(--rose);}
+.card.purple{border-left:3px solid var(--acc2);}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-top:1.5rem;}
+.stat{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;text-align:center;}
+.stat .sn{font-size:2.4rem;font-weight:900;line-height:1;margin-bottom:.25rem;}
+.stat .sl{font-size:.75rem;color:var(--muted);}
+.sn.g{color:var(--green);}
+.sn.t{color:var(--teal);}
+.sn.a{color:var(--amber);}
+.sn.p{color:var(--acc2);}
+
+/* ── BAR CHART ── */
+.bars{margin-top:1.5rem;display:flex;flex-direction:column;gap:.9rem;}
+.bar-row{display:flex;align-items:center;gap:1rem;}
+.bar-label{font-size:.8rem;color:var(--muted);min-width:230px;}
+.bar-track{flex:1;height:7px;background:var(--s3);border-radius:100px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--acc),var(--teal));width:0;transition:width 1.3s var(--ease);}
+.bar-pct{font-size:.8rem;font-weight:700;color:var(--acc2);min-width:34px;}
+
+/* ── FUNNEL VISUAL ── */
+.funnel{display:flex;flex-direction:column;gap:0;margin-top:2rem;position:relative;}
+.funnel-step{display:grid;grid-template-columns:56px 1fr;gap:0;align-items:stretch;}
+.funnel-step+.funnel-step .f-line-wrap::before{top:0;}
+.f-line-wrap{display:flex;flex-direction:column;align-items:center;padding-bottom:0;}
+.f-circle{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;flex-shrink:0;z-index:1;position:relative;}
+.f-circle.c1{background:rgba(248,113,113,.15);color:var(--rose);border:2px solid rgba(248,113,113,.35);}
+.f-circle.c2{background:rgba(124,106,247,.15);color:var(--acc2);border:2px solid rgba(124,106,247,.35);}
+.f-circle.c3{background:rgba(45,212,191,.15);color:var(--teal);border:2px solid rgba(45,212,191,.35);}
+.f-connector{width:2px;flex:1;min-height:24px;background:var(--border);margin:4px auto;}
+.f-content{padding:0 0 2rem 1.5rem;}
+.f-content h3{margin-bottom:.3rem;}
+.f-tag{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;display:inline-block;padding:.15rem .5rem;border-radius:100px;}
+.f-tag.awareness{background:rgba(248,113,113,.1);color:var(--rose);}
+.f-tag.engagement{background:rgba(124,106,247,.12);color:var(--acc2);}
+.f-tag.advocacy{background:rgba(45,212,191,.1);color:var(--teal);}
+.f-meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem;}
+.f-pill{font-size:.7rem;padding:.2rem .6rem;border-radius:100px;background:var(--s2);border:1px solid var(--border);color:var(--muted);}
+
+/* ── HIGHLIGHT BOX ── */
+.hbox{border-radius:var(--r2);padding:1.75rem;margin-top:1.5rem;}
+.hbox.purple{background:linear-gradient(135deg,rgba(124,106,247,.09),rgba(45,212,191,.05));border:1px solid rgba(124,106,247,.25);}
+.hbox.teal{background:linear-gradient(135deg,rgba(45,212,191,.07),rgba(124,106,247,.04));border:1px solid rgba(45,212,191,.25);}
+.hbox.amber{background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(124,106,247,.04));border:1px solid rgba(251,191,36,.22);}
+.hbox.rose{background:linear-gradient(135deg,rgba(248,113,113,.07),rgba(124,106,247,.04));border:1px solid rgba(248,113,113,.22);}
+.hbox h3{margin-bottom:.5rem;}
+
+/* ── DECISION TABLE ── */
+.dt{width:100%;border-collapse:collapse;margin-top:1.5rem;font-size:.82rem;}
+.dt th{text-align:left;padding:.7rem 1rem;background:var(--s2);color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border);}
+.dt td{padding:.8rem 1rem;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;}
+.dt tr:hover td{background:var(--s1);}
+.pill{display:inline-block;padding:.12rem .5rem;border-radius:100px;font-size:.68rem;font-weight:700;}
+.pill.g{background:rgba(74,222,128,.1);color:var(--green);}
+.pill.a{background:rgba(251,191,36,.1);color:var(--amber);}
+.pill.p{background:rgba(124,106,247,.1);color:var(--acc2);}
+.pill.r{background:rgba(248,113,113,.1);color:var(--rose);}
+
+/* ── PERSONA CARD ── */
+.persona{background:var(--s1);border:1px solid var(--border);border-radius:var(--r2);padding:2rem;margin-top:1.5rem;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;}
+@media(max-width:600px){.persona{grid-template-columns:1fr;}}
+.persona-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--teal));display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;}
+.persona-name{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:.2rem;}
+.persona-role{font-size:.78rem;color:var(--acc2);font-weight:600;margin-bottom:1rem;}
+.persona-traits{display:flex;flex-direction:column;gap:.5rem;}
+.trait{display:flex;align-items:flex-start;gap:.5rem;font-size:.82rem;color:var(--muted);}
+.trait-icon{font-size:.9rem;flex-shrink:0;margin-top:.1rem;}
+
+/* ── SKILLS ── */
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1.5rem;}
+@media(max-width:600px){.skills-grid{grid-template-columns:1fr;}}
+.skill-list{list-style:none;}
+.skill-list li{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--muted);padding:.38rem 0;border-bottom:1px solid var(--border);}
+.skill-list li::before{content:"→";color:var(--acc2);font-size:.68rem;flex-shrink:0;}
+
+/* ── CTA ── */
+.cta{text-align:center;padding:5rem 2rem;max-width:600px;margin:0 auto;}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:100px;font-size:.88rem;font-weight:600;text-decoration:none;transition:transform .25s,box-shadow .25s;}
+.btn-p{background:linear-gradient(135deg,var(--acc),#6366f1);color:#fff;box-shadow:0 4px 20px rgba(124,106,247,.3);}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,106,247,.45);}
+.btn-s{background:var(--s1);border:1px solid var(--border);color:var(--muted);}
+.btn-s:hover{border-color:var(--acc2);color:var(--acc2);transform:translateY(-2px);}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;}
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-size:.72rem;color:var(--dim);}
+
+/* ── REVEAL ── */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.rv.vi{opacity:1;transform:none;}
+.rv.d1{transition-delay:.1s;}
+.rv.d2{transition-delay:.2s;}
+.rv.d3{transition-delay:.3s;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--acc);}
+
+@media(max-width:700px){
+  .n-step{grid-template-columns:1fr;}
+  .n-left{border-right:none;border-bottom:1px solid var(--border);flex-direction:row;align-items:center;padding:1rem 0;}
+  .n-dot{display:none;}
+  .n-right{padding:1rem 0;}
+  .meta-cell+.meta-cell{border-left:none;border-top:1px solid var(--border);}
+  .meta-bar{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<div id="pb"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#top" class="nav-brand">Maria Elena Lasiu <b>/ Career Navigator</b></a>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#solution">Solution</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="td active" data-section="top" data-l="Top"></div>
+  <div class="td" data-section="problem" data-l="Problem"></div>
+  <div class="td" data-section="process" data-l="Process"></div>
+  <div class="td" data-section="solution" data-l="Solution"></div>
+  <div class="td" data-section="impact" data-l="Impact"></div>
+  <div class="td" data-section="reflection" data-l="Reflection"></div>
+  <div class="td" data-section="about" data-l="About"></div>
+</div>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<div id="top">
+<div class="hero">
+  <div class="chip rv">Product Strategy · 2-Week Sprint</div>
+  <h1 class="rv">From friction<br/>to <span class="grad">economic mobility</span></h1>
+  <p class="hero-sub rv">How I reframed Whiteshield's Career Navigator from a diagnostic-first data-collection tool into a value-first acquisition engine — and designed three low-overhead features to turn anxious professionals into high-fidelity data contributors.</p>
+
+  <div class="meta-bar rv">
+    <div class="meta-cell"><div class="ml">Role</div><div class="mv">Self-initiated product strategy</div>
+
+  <div class="rv d1" style="margin-bottom:2.5rem;">
+    <div style="position:relative;padding-top:56.25%;border-radius:18px;overflow:hidden;background:var(--s1);box-shadow:0 18px 45px rgba(0,0,0,0.55);border:1px solid var(--border2);">
+      <iframe src="https://www.youtube.com/embed/htz4WxfJpo0?start=48" title="Whiteshield Career Navigator overview" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+    <div class="meta-cell"><div class="ml">Timeline</div><div class="mv">2-week exploration sprint</div></div>
+    <div class="meta-cell"><div class="ml">Methods</div><div class="mv">Funnel analysis · Persona synthesis · Value prop reframe</div></div>
+    <div class="meta-cell"><div class="ml">Output</div><div class="mv">3 features · 4 KPIs · GTM recommendation</div></div>
+  </div>
+
+  <div class="bubbles rv">
+    <div class="bubble"><div class="bn">3</div><div class="bl">High-impact features designed</div></div>
+    <div class="bubble"><div class="bn">↑CV</div><div class="bl">Upload conversion target</div></div>
+    <div class="bubble"><div class="bn">↓TTV</div><div class="bl">Time-to-value reduction</div></div>
+  </div>
+
+  <div class="tags rv">
+    <span class="tag">Product Strategy</span>
+    <span class="tag">Value Proposition Reframing</span>
+    <span class="tag">Funnel Analysis</span>
+    <span class="tag">Persona Synthesis</span>
+    <span class="tag">Product-Led Growth</span>
+    <span class="tag">KPI Framework</span>
+    <span class="tag">Labour Market Intelligence</span>
+    <span class="tag">Acquisition Design</span>
+  </div>
+</div>
+</div>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ PROBLEM ════════════════════ -->
+<section id="problem">
+<div class="rv">
+  <div class="sec-label">01 — Problem</div>
+  <h2>A valuable product that was asking too much, too soon</h2>
+  <p style="max-width:640px;"><a href="https://www.youtube.com/watch?v=htz4WxfJpo0&t=48s" target="_blank" style="color:var(--acc2);text-decoration:none;">Whiteshield's Career Navigator</a> is a Labour Market Intelligence platform built to give citizens data-driven career guidance. At the backend, it feeds real-time skills and employment data into Whiteshield's Quantum Governance model — informing national-level policy decisions. The product vision was compelling. The conversion reality was not.</p>
+</div>
+
+<div class="grid2 rv">
+  <div class="card rose">
+    <div class="card-icon">🚧</div>
+    <h3>The diagnostic-first trap</h3>
+    <p>Users had to upload CVs, complete attitude surveys, and share detailed skills data — all before receiving a single insight. The product asked for trust before it had earned it.</p>
+  </div>
+  <div class="card rose">
+    <div class="card-icon">📉</div>
+    <h3>High drop-off at first contact</h3>
+    <p>Only the most motivated users are expected to push through the upfront friction. Everyone else will likely to bounce — taking their data with them and leaving the Quantum Model starved of the signals it needed.</p>
+  </div>
+  <div class="card rose">
+    <div class="card-icon">🕳️</div>
+    <h3>Sparse data even from converters</h3>
+    <p>Users who did convert shared the minimum viable data to access the tool — not enough to generate the rich "Individual Meaning" signals required for genuine policy intelligence.</p>
+  </div>
+  <div class="card rose">
+    <div class="card-icon">🔇</div>
+    <h3>No organic growth mechanism</h3>
+    <p>The platform had no built-in virality. Every new user required direct acquisition effort — making scale expensive and slow.</p>
+  </div>
+</div>
+
+<div class="hbox amber rv">
+  <h3>⚠️ The core tension</h3>
+  <p>The product needed high-fidelity data to deliver personalised value. But it needed to deliver personalised value first, to earn the right to collect high-fidelity data. This circular dependency was the structural friction to solve.</p>
+</div>
+
+<div class="hbox purple rv">
+  <h3>🎯 Strategic question</h3>
+  <p style="font-size:1.05rem;font-weight:700;color:var(--text);">How do you increase both the volume and fidelity of citizen data — without a full platform rebuild and without sacrificing user trust?</p>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ PROCESS ════════════════════ -->
+<section id="process">
+<div class="rv">
+  <div class="sec-label">02 — Process</div>
+  <h2>How I diagnosed the gap and found the lever</h2>
+  <p style="max-width:640px;">This was a 2-week self-initiated sprint. No internal access, no stakeholder buy-in, no existing data. My job was to identify the strategic lever from the outside — using product analysis, user psychology, and labour market signals.</p>
+</div>
+
+<div class="narrative" style="margin-top:2.5rem;">
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Step 1</div>
+      <span class="step-type problem">Problem</span>
+      <div class="n-dot problem"></div>
+    </div>
+    <div class="n-right">
+      <h3>Mapping the friction — where users were dropping off and why</h3>
+      <p>I mapped the existing product journey end-to-end, identifying the specific moment where conversion collapsed: the upfront ask. Before users saw a single output, they were expected to provide CV data, complete self-assessments, and implicitly trust an unknown platform with sensitive professional information. I framed this as a <strong>value exchange imbalance</strong>: the platform was withdrawing trust before depositing value.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Step 2</div>
+      <span class="step-type decision">Decision</span>
+      <div class="n-dot decision"></div>
+    </div>
+    <div class="n-right">
+      <h3>Defining who to design for — and why this user, not all users</h3>
+      <p>Rather than designing for a generic "career seeker," I synthesised labour market displacement research and behavioural signals to identify the highest-intent, highest-value segment. The insight: the most motivated users are not the most desperate — they are the <strong>most informed and most anxious</strong>. Mid-career professionals in AI-exposed sectors who understand the stakes but lack a clear action path. This informed anxiety is the product's entry point.</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Step 3</div>
+      <span class="step-type action">Action</span>
+      <div class="n-dot action"></div>
+    </div>
+    <div class="n-right">
+      <h3>Reframing the value proposition — from assessment to agency</h3>
+      <p>I audited the existing product narrative and identified a fundamental mismatch: the platform spoke the language of <em>diagnosis</em>, but users arrived in the language of <em>urgency</em>. I redesigned the value proposition around a single pivot: from "understand where you are" to "see your risk and get your roadmap." This shift required no new features — only a change in what the product leads with.</p>
+      <p class="quote">"Before: Upload your CV and we'll assess your skills. After: See your career risk score compared to national AI trends — and get a personalised roadmap to resilience."</p>
+    </div>
+  </div>
+
+  <div class="n-step rv">
+    <div class="n-left">
+      <div class="step-num">Step 4</div>
+      <span class="step-type impact">Impact</span>
+      <div class="n-dot impact"></div>
+    </div>
+    <div class="n-right">
+      <h3>Designing the acquisition funnel — three features, one progressive journey</h3>
+      <p>I translated the strategic reframe into three concrete feature interventions, each designed as an overlay on the existing platform. Together, they form a progressive value loop: <strong>Awareness → Engagement → Advocacy</strong>. Each step incentivises users to voluntarily share richer data in exchange for more personalised insights — flipping the data collection model from extraction to exchange.</p>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ SOLUTION ════════════════════ -->
+<section id="solution">
+<div class="rv">
+  <div class="sec-label">03 — Solution</div>
+  <h2>Three features. One progressive value loop.</h2>
+  <p style="max-width:640px;">Each feature was designed to be deployed as an overlay on the existing platform — requiring minimal engineering investment while maximising behavioural impact at the three critical moments of the user journey.</p>
+</div>
+
+<!-- Target Persona -->
+<div class="rv" style="margin-top:2rem;">
+  <h3 style="margin-bottom:.3rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--acc2);">Designed for this user</h3>
+  <div class="persona">
+    <div class="persona-avatar">👩‍💼</div>
+    <div>
+      <div class="persona-name">The "Informed Anxious" Professional</div>
+      <div class="persona-role">Mid-level · 3–7 years experience · AI-exposed sector</div>
+      <div class="persona-traits">
+        <div class="trait"><div class="trait-icon">📰</div><p>Follows AI displacement news closely — knows enough to be worried, not enough to act with confidence.</p></div>
+        <div class="trait"><div class="trait-icon">🎯</div><p>Wants personalised, objective direction for their next skill investment — not generic trend data.</p></div>
+        <div class="trait"><div class="trait-icon">🔒</div><p>Cautious about sharing professional data with unfamiliar platforms; needs a clear value exchange first.</p></div>
+        <div class="trait"><div class="trait-icon">📣</div><p>Actively manages their LinkedIn presence and responds to verifiable signals of credibility.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Funnel -->
+<div class="funnel rv" style="margin-top:2.5rem;">
+
+  <div class="funnel-step">
+    <div class="f-line-wrap">
+      <div class="f-circle c1">1</div>
+      <div class="f-connector"></div>
+    </div>
+    <div class="f-content">
+      <div class="f-tag awareness">Awareness · Zero friction</div>
+      <h3>Resilience Index — "Your career risk in 30 seconds"</h3>
+      <p>A high-impact landing-page widget that converts a user's job title into a personalised AI displacement risk score — benchmarked against national trends. No login, no upload, no commitment required. Users get immediate, specific, actionable data the moment they arrive.</p>
+      <div class="f-meta">
+        <span class="f-pill">🎯 Reduces bounce rate</span>
+        <span class="f-pill">⚡ Instant time-to-value</span>
+        <span class="f-pill">🧠 Triggers informed anxiety → action intent</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="funnel-step">
+    <div class="f-line-wrap">
+      <div class="f-circle c2">2</div>
+      <div class="f-connector"></div>
+    </div>
+    <div class="f-content">
+      <div class="f-tag engagement">Engagement · CV upload moment</div>
+      <h3>Resilience Boost Roadmap — "Gap-to-Growth" visual</h3>
+      <p>Immediately after CV upload, the platform generates a personalised "Gap-to-Growth" roadmap — showing exactly which 3 skills will increase the user's market value most, ranked by ROI. This transforms the CV upload from a data-extraction event into a value-delivery moment. The richer the CV, the richer the output — incentivising completeness.</p>
+      <div class="f-meta">
+        <span class="f-pill">📄 Drives CV upload volume</span>
+        <span class="f-pill">🔬 High-fidelity skill data for Quantum Model</span>
+        <span class="f-pill">🔄 Completeness-incentivised data loop</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="funnel-step">
+    <div class="f-line-wrap">
+      <div class="f-circle c3">3</div>
+    </div>
+    <div class="f-content">
+      <div class="f-tag advocacy">Advocacy · PLG loop</div>
+      <h3>Future-Ready Credential — co-branded verifiable badge</h3>
+      <p>Users who complete the roadmap receive a "Certified Future-Ready Skills" badge — co-branded by Whiteshield and the client government or ministry — shareable directly to LinkedIn. The credential serves as professional recognition and simultaneously creates a Product-Led Growth loop: every share drives organic acquisition from the exact same high-intent professional demographic.</p>
+      <div class="f-meta">
+        <span class="f-pill">📣 Organic PLG loop</span>
+        <span class="f-pill">↓ CAC via referral acquisition</span>
+        <span class="f-pill">🏛️ Institutional credibility signal</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Value Exchange Reframe Box -->
+<div class="hbox teal rv">
+  <h3>💡 The underlying logic</h3>
+  <p>Each feature gives before it asks. Users progress from a 30-second anonymous interaction → a personalised roadmap → a shareable credential. At every step, they voluntarily share richer data in exchange for a proportionally more valuable output. The Quantum Governance model receives higher-fidelity signals at higher volume — without a single coercive data request.</p>
+</div>
+
+<!-- Decision table -->
+<div class="rv" style="margin-top:2.5rem;">
+  <h3 style="margin-bottom:.3rem;">How I chose these interventions over alternatives</h3>
+  <p style="margin-bottom:.5rem;">Each feature was selected over plausible alternatives based on impact-to-build-cost ratio and alignment with the target persona's psychology.</p>
+  <table class="dt">
+    <thead><tr><th>Decision point</th><th>What I chose</th><th>What I ruled out &amp; why</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>First-contact intervention</td>
+        <td>Anonymous risk widget (Resilience Index)</td>
+        <td>Onboarding modal: adds friction at highest drop-off moment</td>
+        <td><span class="pill g">Reduces TTV to &lt;30 seconds</span></td>
+      </tr>
+      <tr>
+        <td>CV upload incentive</td>
+        <td>Immediate visual roadmap output</td>
+        <td>Gamified points system: abstract reward, low perceived value for professional audience</td>
+        <td><span class="pill g">Directly actionable output drives upload</span></td>
+      </tr>
+      <tr>
+        <td>Growth mechanism</td>
+        <td>Co-branded LinkedIn credential</td>
+        <td>Referral discount codes: wrong context, wrong audience motivation</td>
+        <td><span class="pill a">PLG loop with same-demographic reach</span></td>
+      </tr>
+      <tr>
+        <td>Data collection model</td>
+        <td>Progressive exchange (earn then share)</td>
+        <td>Upfront mandatory fields: confirmed as primary drop-off cause</td>
+        <td><span class="pill p">Higher fidelity, higher volume, higher trust</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ IMPACT ════════════════════ -->
+<section id="impact">
+<div class="rv">
+  <div class="sec-label">04 — Impact</div>
+  <h2>What success looks like — and how to measure it</h2>
+  <p style="max-width:640px;">Each KPI was selected because it ties directly to both user outcome quality and business sustainability. Metrics that could be gamed without delivering value were explicitly excluded.</p>
+</div>
+
+<div class="grid2 rv">
+  <div class="card green">
+    <div class="card-icon">📈</div>
+    <h3>CV Conversion Rate</h3>
+    <p>CTR from landing page to CV upload prompt. Measures how effectively the Resilience Index breaks first-contact friction. A rising rate signals the value proposition reframe is working — not just that traffic increased.</p>
+  </div>
+  <div class="card teal">
+    <div class="card-icon">⏱️</div>
+    <h3>Time-to-Value (TTV)</h3>
+    <p>Time between first visit and first actionable insight delivered. Lower TTV directly correlates with higher retention and higher word-of-mouth advocacy — the two levers that reduce long-term CAC.</p>
+  </div>
+  <div class="card purple">
+    <div class="card-icon">🧬</div>
+    <h3>Data Integrity Score</h3>
+    <p>Average number of unique skill-tags extracted per CV via the Quantum Engine. This is the proxy for policy-grade data quality — and the north star metric for Whiteshield's institutional mission.</p>
+  </div>
+  <div class="card amber">
+    <div class="card-icon">🔗</div>
+    <h3>K-Factor (Virality)</h3>
+    <p>New signups attributed to organic LinkedIn referral links from credential shares. Measures PLG loop effectiveness and directly reduces CAC by replacing paid acquisition with peer-trust-driven referrals from the exact target demographic.</p>
+  </div>
+</div>
+
+<div class="stat-row rv">
+  <div class="stat"><div class="sn g">↑</div><div class="sl">CV upload conversion — primary north star</div></div>
+  <div class="stat"><div class="sn t">↓30s</div><div class="sl">Target TTV from landing page</div></div>
+  <div class="stat"><div class="sn p">k &gt; 1</div><div class="sl">Virality target via PLG loop</div></div>
+  <div class="stat"><div class="sn a">↓CAC</div><div class="sl">Long-term acquisition cost via referrals</div></div>
+</div>
+
+<!-- Constraints box -->
+<div class="hbox rose rv">
+  <h3>⚙️ Constraints this solution worked within</h3>
+  <p>No internal platform access or user data. No stakeholder buy-in required. All three features were designed as <strong>platform overlays</strong> — deployable without core infrastructure changes. The 2-week sprint constraint forced prioritisation of the single highest-leverage intervention at each funnel stage rather than a comprehensive redesign.</p>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ REFLECTION ════════════════════ -->
+<section id="reflection">
+<div class="rv">
+  <div class="sec-label">05 — Reflection</div>
+  <h2>What I'd validate next — and what this sprint proved</h2>
+</div>
+
+<div class="hbox purple rv">
+  <h3>✅ The decision I'd protect</h3>
+  <p>The choice to design for a <em>specific</em> high-intent persona rather than a broad "career seeker." The "Informed Anxious Professional" framing was the key that unlocked the right product language, the right moment of intervention, and the right organic growth mechanism. A generic approach would have produced generic features.</p>
+</div>
+
+<div class="hbox teal rv">
+  <h3>🔄 What I'd validate if I had access</h3>
+  <p>I'd run a 5-participant moderated usability test on the Resilience Index landing widget to validate whether the risk-score framing triggers action intent or fatalism in real users — a critical unknown. I'd also run a structured expert interview with one Whiteshield policy analyst to stress-test whether the Data Integrity Score proxy actually maps to Quantum Governance signal quality.</p>
+</div>
+
+<div class="hbox amber rv">
+  <h3>💡 The assumption I'm making explicit</h3>
+  <p>This sprint assumes that "informed anxiety" is the dominant motivational state of the target segment. That assumption was synthesised from labour market research — not validated through primary user interviews. If I'm wrong about the emotional trigger, the value proposition reframe loses its force. That's the first thing I'd test with a real user cohort.</p>
+</div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ════════════════════ ABOUT ════════════════════ -->
+<section id="about">
+<div class="rv">
+  <div class="sec-label">06 — About this project</div>
+  <h2>A self-initiated sprint to demonstrate product judgment</h2>
+  <p style="max-width:680px;">Career Navigator is a conceptual product strategy exploration — completed independently in 2 weeks, with no internal access, existing data, or stakeholder involvement. It was designed to demonstrate one specific capability: the ability to identify structural friction in a real product, reframe the value proposition using behavioural insight, and propose high-leverage interventions without requiring a platform rebuild.</p>
+  <p style="max-width:680px;">It is a smaller and more constrained exercise than full-scale validation programmes like SugarWise. But it reflects the same discipline: <strong>start with the user's real problem, design around their natural behaviour, and measure success by outcomes that matter — not just metrics that move.</strong></p>
+</div>
+
+<div class="skills-grid rv">
+  <div>
+    <h3 style="margin-bottom:.75rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--acc2);">Skills demonstrated</h3>
+    <ul class="skill-list">
+      <li>Product funnel analysis without internal access</li>
+      <li>Value proposition reframing</li>
+      <li>Persona synthesis from secondary research</li>
+      <li>Acquisition funnel design</li>
+      <li>Product-Led Growth (PLG) loop design</li>
+      <li>KPI framework definition</li>
+    </ul>
+  </div>
+  <div>
+    <h3 style="margin-bottom:.75rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--acc2);">What I'd do with more time</h3>
+    <ul class="skill-list">
+      <li>5-participant usability test on Resilience Index widget</li>
+      <li>Expert interview with Whiteshield policy analyst</li>
+      <li>A/B test on value proposition framing variants</li>
+      <li>Validate "informed anxiety" as dominant user motivator</li>
+      <li>Map full pen-and-paper prototype for roadmap visual</li>
+    </ul>
+  </div>
+</div>
+</section>
+
+<!-- CTA -->
+<div class="cta">
+  <div class="sec-label" style="justify-content:center;display:flex;">What's next</div>
+  <h2>Want to work together?</h2>
+  <p>I'm available for UX research, product strategy, and mixed-methods engagements. Let's talk.</p>
+  <div class="cta-btns">
+    <a href="mailto:mariaelenalasiu@gmail.com" class="btn btn-p">Get in touch →</a>
+    <a href="index.html" class="btn btn-s">← Back to portfolio</a>
+  </div>
+</div>
+
+<footer>© 2025 Maria Elena Lasiu · UX Researcher & Product Strategist</footer>
+
+<script>
+// Progress bar
+const pb = document.getElementById('pb');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  pb.style.width = pct + '%';
+});
+
+// Reveal on scroll
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('vi'); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+
+// Animate bars
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.bar-fill').forEach(b => {
+        b.style.width = b.dataset.p + '%';
+      });
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.bars').forEach(el => barObs.observe(el));
+
+// TOC active dot
+const sections = ['top','problem','process','solution','impact','reflection','about'];
+const dots = document.querySelectorAll('.td');
+const secEls = sections.map(id => document.getElementById(id)).filter(Boolean);
+
+window.addEventListener('scroll', () => {
+  let current = 0;
+  secEls.forEach((s, i) => {
+    if(window.scrollY >= s.offsetTop - 200) current = i;
+  });
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+});
+
+// TOC click
+dots.forEach((d, i) => {
+  d.addEventListener('click', () => {
+    const target = document.getElementById(d.dataset.section || sections[i]);
+    if(target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
